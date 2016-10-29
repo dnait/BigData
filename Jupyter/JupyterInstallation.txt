@@ -1,0 +1,113 @@
+Original post:
+https://toree.incubator.apache.org/documentation/user/quick-start
+http://blog.inet198.cn/?heng_2218/article/details/51006075
+
+Environment:
+mac/ OSX 10.10.5 64bit sbt/git
+
+1.install Jupyter and Python
+Anaconda download address:https://www.continuum.io/downloads 
+Anaconda2-4.2.0-MacOSX-x86_64.sh
+use bash for Linux and OSX system. 
+
+1.1 go into the directory of Anaconda2-4.2.0-MacOSX-x86_64.sh, here is Downloads
+$ cd Downloads
+Downloads$ bash Anaconda2-4.2.0-MacOSX-x86_64.sh
+1.2 keep enter until you see 
+Do you approve the license terms? [yes|no]
+>>> 
+Please answer 'yes' or 'no':
+
+enter: “Yes”
+
+Anaconda2 will now be installed into this location:
+/Users/grace/anaconda2
+
+  - Press ENTER to confirm the location
+  - Press CTRL-C to abort the installation
+  - Or specify a different location below
+
+[/Users/grace/anaconda2] >>> (just press ENTER, and wait about 1 min and you can see the installing process)
+
+1.3 $ cd /Users/grace/anaconda2
+1.4 anaconda2$ jupyter notebook
+
+However, I get an error:
+jupyter: 'notebook' is not a Jupyter command
+
+After looking to a gazillion of pages on line and trying as many solutions, this is the only thing that worked for me:
+
+pip uninstall notebook
+pip install --upgrade notebook
+I am not sure that the "upgrade" is necessary, but after that I had
+
+jupyter notebook (works)
+
+jupyter-notebook (not working)
+
+A browser will open:   http://localhost:8888/tree#
+
+1.5 At right corner, you can see the new file(we have python 2 file now). 
+
+Manually set port and webUI address:
+#jupyter notebook --no-browser --port 5678 --ip=9.21.63.204
+port: 5678, IP:localIP address, need to open browser and type the address
+“9.21.63.204:5678” to open the jupyter browser
+
+import matplotlib
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+x = np.linspace(0,20,1000)
+y1 = np.sin(x)
+y2 = np.cos(x)
+
+plt.plot(x,y1, ‘-b’, label=‘sine’)
+plt.plot(x,y2, ‘-r’,label=‘cosine’)
+plt.legend(loc=‘upper right’)
+plt.ylim(-1.5,2.0)
+
+Error agin:
+ImportError: No module named matplotlib.pyplot
+
+CTRL+C to stop the jupyter, install matplotlib
+
+anaconda2$ pip install matplotlib
+
+restart anaconda2$ jupyter notebook
+
+Now it can draw! oh yeah!
+
+But Jupyter’s draw function is very week.(Week in Canopy, too. Not recommended)
+ImportError: No module named tensorflow…
+
+******************************************************************************
+
+2、Install a kernel other than Python（Scala）
+
+2.1 $jupyter kernelspec list can be used to check installed kernel
+
+anaconda2$ jupyter kernelspec list
+Available kernels:
+  python2    /Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/ipykernel/resources
+
+2.2 Download:  jupyter-scala: jupyter-scala_2.10.5-0.2.0-SNAPSHOT.tar.xz
+Go to Downloads:
+Downloads$ cd jupyter-scala_2.10.5-0.2.0-SNAPSHOT/bin
+bin$ bash jupyter-scala
+
+2.3 Go back to anaconda directory to check the kernel list:
+anaconda2 $ jupyter kernelspec list
+Available kernels:
+  scala210    /Users/grace/.ipython/kernels/scala210
+  python2     /Users/grace/anaconda2/lib/python2.7/site-packages/ipykernel/resources
+
+2.4  anaconda2 $ jupyter notebook
+Now you can see Scala
+
+—ignore the spark-kernel installation, decide to move to scala-Intellij/Scala-Eclipse
+
+
+
+
+
