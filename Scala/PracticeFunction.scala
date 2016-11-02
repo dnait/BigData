@@ -24,15 +24,15 @@ object PracticeFunction {
   // Write a function that converts a string to upper-case, 
   //and use that function of a few test strings.
   // Then, do the same thing using a function literal instead of a separate, named function.
-  def UpperCase(x : String) : String = {x.toUpperCase}
+  def UpperCase(x: String) : String = {x.toUpperCase}
   val s1 = UpperCase("hellotoyou")
   println(s1)
   
-  def StringToUpperCase(x: String, f:String => String) : String = {f(x)}
+  def StringToUpperCase(x: String, f: String => String) : String = {f(x)}
   val s2 = StringToUpperCase("hellonewyork",UpperCase)
   println(s2)
   
-  def lowerCase(x:String) : String = {x.toLowerCase()}
+  def lowerCase(x: String) : String = {x.toLowerCase()}
   def StringToLowerCase(x: String, f: String => String) : String = {f(x)}
   val s3 = StringToLowerCase("YOU MADE MY DAY!", lowerCase)
   println(s3)
