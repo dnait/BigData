@@ -14,7 +14,7 @@ object Practice {
       val LetterA:Char = 'a'
       val pi:Double = 3.14159265
       val piSinglePrecision:Float = 3.14159265f
-      val bigNumber: Long = 1234567890l 
+      val bigNumber:Long = 1234567890l 
       val smallNumber:Byte = 127
       
       val isGreater = 1 > 2
