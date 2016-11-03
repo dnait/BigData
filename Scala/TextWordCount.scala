@@ -1,3 +1,4 @@
+//mac osx 10 and Scala IDE from Eclipse
 package com.sundogsoftware.sparkstreaming
 
 import org.apache.spark._
