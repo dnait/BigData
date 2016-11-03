@@ -12,6 +12,8 @@ import Utilities._
 
 /** Maintains top URL's visited over a 5 minute window, from a stream
  *  of Apache access logs on port 9999.
+ *  max osx 10.0 need to run terminal: $ nc -kl 9999 < access_log.txt
+ *  Need to Ctrl^c to break the stream and restart it again if you want to make changes in this scala file
  */
 object LogParser {
  
