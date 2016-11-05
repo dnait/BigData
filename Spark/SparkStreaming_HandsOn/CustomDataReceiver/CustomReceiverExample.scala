@@ -1,6 +1,6 @@
 // Custom receiver docs at http://spark.apache.org/docs/latest/streaming-custom-receivers.html
 
-package com.sundogsoftware.sparkstreaming
+package com.suncatsoftware.sparkstreaming
 
 import java.io.{BufferedReader, InputStreamReader}
 import java.net.Socket

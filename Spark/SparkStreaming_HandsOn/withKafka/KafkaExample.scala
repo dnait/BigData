@@ -1,6 +1,6 @@
 // Kafka setup instructions for Windows: https://dzone.com/articles/running-apache-kafka-on-windows-os
 
-package com.sundogsoftware.sparkstreaming
+package com.suncatsoftware.sparkstreaming
 
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Seconds, StreamingContext}

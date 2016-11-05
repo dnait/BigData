@@ -1,4 +1,4 @@
-package com.sundogsoftware.sparkstreaming
+package com.suncatsoftware.sparkstreaming
 
 import org.apache.log4j.Level
 import java.util.regex.Pattern
