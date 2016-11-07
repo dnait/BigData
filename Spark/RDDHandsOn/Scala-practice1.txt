@@ -1,0 +1,27 @@
+
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 2.0.1
+      /_/
+         
+Using Scala version 2.11.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_60)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> val babyName = sc.textFile("baby_names.csv")babyName: org.apache.spark.rdd.RDD[String] = baby_names.csv MapPartitionsRDD[1] at textFile at <console>:24scala> babyName.countres0: Long = 35218scala> babyName.first()res1: String = Year,First Name,County,Sex,Count
+
+//Spark is case-sensitive，count return type is Longscala> val davidRows = rows.filter(row =>row(1).contains("David"))davidRows: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[9] at filter at <console>:28scala> davidRows.countres6: Long = 0scala> val davidRows = rows.filter(row =>row(1).contains("DAVID"))  davidRows: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[10] at filter at <console>:28scala> davidRows.countres7: Long = 136//Find out how many rows has David with Count > 10 (Count is the last column)//row(4).toInt > 10, cannot row(4) > 10scala> davidRows.filter(row => row(4).toInt > 10).countres8: Long = 89scala> val names = rows.map(row => (row(1),1))   //map will [String ,Int]scala> names.reduceByKey((a,b) => a + b).sortBy(_._2).foreach(println _)//recreate RDDscala> val filteredRows = babyNames.filter(line => !line.contains("contains")).map(line => line.split(","))filteredRows: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[44] at map at <console>:26//Sort the appearance of countryscala> val filteredRows = babyName.filter(line => !line.contains("Count")).map(line => line.split(","))filteredRows: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[12] at map at <console>:26scala> filteredRows.map(n => (n(1),n(4).toInt)).reduceByKey((a,b) => a + b).sortBy(_._2).foreach(println _)scala> rows.firstres5: Array[String] = Array(Year, First Name, County, Sex, Count)scala> val davidrows = rows.filter(row => row(1).contains("DAVID"))davidrows: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[27] at filter at <console>:28scala> davidrows.filter(row => row(4).toInt > 10).countres7: Long = 89//How to sort:map ->，reduce(to calculate appearance)->sortBy -> output is descending orderscala> val names = rows.map(line => (line(1),1))names: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[30] at map at <console>:28scala> names.reduceByKey((a,b) => a + b).sortBy(_._2).foreach(println _)//Attention: Cannot use split result to do reduceByKey,the type doesn’t match，need to do map firstscala> val filteredRows = babyName.filter(line => !line.contains("Count")).map(line => line.split(","))filteredRows: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[38] at map at <console>:26
+scala> filteredRows.map(n => (n(1), n(4).toInt)).reduceByKey((a,b) => a + b).sortBy(_._2).foreach(println)
+scala> filteredRows.map(n => (n(1), n(4).toInt)).reduceByKey((a,b) => a + b).sortBy(_._2).foreach(println)
+scala> filteredRows.map(n => (n(1), n(4).toInt)).reduceByKey((a,b) => a + b).sortBy(_._2).foreach(println)
+
+#However, we notice every time the result is different. because it prints the partition result, if you want to get the all partitions’s result, need to add “collect”
+
+Run several times, the results are consistent.
+scala> filteredRows.map(n => (n(1), n(4).toInt)).reduceByKey((a,b) => a + b).sortBy(_._2).collect.foreach(println)
+scala> filteredRows.map(n => (n(1), n(4).toInt)).reduceByKey((a,b) => a + b).sortBy(_._2).collect.foreach(println)
+scala> filteredRows.map(n => (n(1), n(4).toInt)).reduceByKey((a,b) => a + b).sortBy(_._2).collect.foreach(println)
+
+//collect = foreachscala> sc.parallelize(List(1,2,3)).flatMap(x => List(x,x,x))res20: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[89] at flatMap at <console>:25// flatmap:repeated elements，map: multiple Listsscala> sc.parallelize(List(1,2,3)).flatMap(x => List(x,x,x)).collectres21: Array[Int] = Array(1, 1, 1, 2, 2, 2, 3, 3, 3)scala> sc.parallelize(List(1,2,3)).map(x => List(x,x,x)).collectres23: Array[List[Int]] = Array(List(1, 1, 1), List(2, 2, 2), List(3, 3, 3))scala> val parallel = sc.parallelize(1 to 9, 3)parallel: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[94] at parallelize at <console>:24scala> parallel.mapPartitions(x => List(x.next).iterator).collectres24: Array[Int] = Array(1, 4, 7)scala> parallel.map(x => List(x.next).iterator).collect<console>:27: error: value next is not a member of Int       parallel.map(x => List(x.next).iterator).collect
