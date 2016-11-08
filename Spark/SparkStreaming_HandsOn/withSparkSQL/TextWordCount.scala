@@ -1,3 +1,5 @@
+package com.sundogsoftware.sparkstreaming
+
 import org.apache.spark._
 
 object TextWordCount {
