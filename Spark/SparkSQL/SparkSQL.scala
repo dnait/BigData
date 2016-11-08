@@ -1,4 +1,4 @@
-package com.sundogsoftware.sparkstreaming
+package com.suncatsoftware.sparkstreaming
 
 import org.apache.spark._
 import org.apache.spark.SparkContext._
