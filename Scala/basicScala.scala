@@ -24,6 +24,9 @@ object basicScala {
     //Anonymous Functions
     val c = (x: Int) => x * x
     println("Result is " + c(10))
+    
+    val fruits = Array( "apple", "orange", "grapes", "guava")
+    println(fruits(2))     //grapes
 
   }
   //Functions
