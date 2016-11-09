@@ -27,7 +27,12 @@ object basicScala {
     
     val fruits = Array( "apple", "orange", "grapes", "guava")
     println(fruits(2))     //grapes
-
+    
+    val a = Map("apple" -> "fruit", "cabbage" -> "vege", "peanut" -> "nut")
+    //a: scala.collection.immutable.Map[String,String] = Map(apple -> fruit, cabbage -> vegetable, peanut -> nuts)
+    //a("g") will result in exception java.util.NoSuchElementException: key not found g
+    
+    println(a("apple"))      //fruit
   }
   //Functions
   def sum(a: Int, b: Int): Int = { a + b }
