@@ -1,0 +1,223 @@
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 2.0.1
+      /_/
+         
+Using Scala version 2.11.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_60)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> val a = 10
+a: Int = 10
+
+scala> val b = a + 1
+b: Int = 11
+
+scala> a = a + 1
+<console>:25: error: reassignment to val
+       a = a + 1
+         ^
+
+scala> def add(a: Int, b: Int): Int = a + b
+add: (a: Int, b: Int)Int
+
+scala> val m: Int = add(1,2)
+m: Int = 3
+
+scala> println(m)
+3
+
+scala> def fun(a: Int): Int = {
+     | a + 1
+     | a - 2
+     | a * 3
+     | }
+fun: (a: Int)Int
+
+scala> val p: Int = fun(10)
+p: Int = 30
+
+scala> println(p)
+30
+
+scala> #no explicit "return"
+<console>:1: error: illegal start of definition
+#no explicit "return"
+^
+
+scala> 
+
+scala> val i = 3
+i: Int = 3
+
+scala> val p = if (i > 0) -1 else -2
+p: Int = -1
+
+scala> val q = if (true) "No1" else "No2"
+q: String = No1
+
+scala> val name = "Mike"
+name: String = Mike
+
+scala> val greeting = "Hi"
+greeting: String = Hi
+
+scala> greeting + name
+res0: String = HiMike
+
+scala> greeting + "\n" + name
+res1: String =
+Hi
+Mike
+
+scala> val complexGreeting = """You are amazong, 
+     | incredible,
+     | young,
+     | and ever so 
+     | gracious
+     | """
+complexGreeting: String =
+"You are amazong,
+incredible,
+young,
+and ever so
+gracious
+"
+
+scala> val p1 = "abc"
+p1: String = abc
+
+scala> val p2 = "abc"
+p2: String = abc
+
+scala> p1 == p2
+res2: Boolean = true
+
+scala> s"$greeting, $name, How are you today?"
+res3: String = Hi, Mike, How are you today?
+
+scala> s"${greeting * 2}, $name, How are you today?"
+res4: String = HiHi, Mike, How are you today?
+
+scala> val pi = 3.14
+pi: Double = 3.14
+
+scala> f"Pi is $pi%.2f"
+res5: String = Pi is 3.14
+
+scala> def printlnAny(x: Any)  = println(x)
+printlnAny: (x: Any)Unit
+
+scala> def printlnAny(x: AnyVal)  = println(x)
+printlnAny: (x: AnyVal)Unit
+
+scala> def printlnAny(x: AnyRef)  = println(x)
+printlnAny: (x: AnyRef)Unit
+
+scala> (1 to 10).sum
+res6: Int = 55
+
+scala> (1 to 10).sum
+res6: Int = 55
+
+scala> val x: String = null
+x: String = null
+
+scala> if (x == null) println("nul") else println("Somthing")
+nul
+
+scala> val i: Int = null
+<console>:23: error: an expression of type Null is ineligible for implicit conversion
+       val i: Int = null
+                    ^
+
+scala> val emptyList = List()
+emptyList: List[Nothing] = List()
+
+scala> val someList = List(6,7,8,9)
+someList: List[Int] = List(6, 7, 8, 9)
+
+scala> var listIter = List(1,2,3,4)
+listIter: List[Int] = List(1, 2, 3, 4)
+
+scala> while(listIter != Nil) {
+     | println(listIter.head)
+     | listIter = listIter.tail}
+1
+2
+3
+4
+
+scala> while(someList != Nil) {
+     | println(someList.head)
+     | someList = someList.tail}
+<console>:28: error: reassignment to val
+       someList = someList.tail}
+                ^
+
+scala> def fraction(num: Double, denom: Double): Option 
+     | ={
+     | if (denom == 0) None
+     | else Option(num/denom)
+     | }
+<console>:23: error: class Option takes type parameters
+       def fraction(num: Double, denom: Double): Option
+                                                 ^
+
+scala> def fraction(num: Double, denom: Double): Option[Double] = {
+     | if (denom == 0) None else Option(num/denom)
+     | }
+fraction: (num: Double, denom: Double)Option[Double]
+
+scala> fraction(100,0)
+res10: Option[Double] = None
+
+scala> fraction(100,10)
+res11: Option[Double] = Some(10.0)
+
+scala> def printAny(x: Any) {println(x)}
+printAny: (x: Any)Unit
+
+scala> 123.toLong
+res12: Long = 123
+
+scala> 123.24.toLong
+res14: Long = 123
+
+scala> "123".toLong
+res15: Long = 123
+
+scala> "abc".toLong
+java.lang.NumberFormatException: For input string: "abc"
+  at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
+  at java.lang.Long.parseLong(Long.java:589)
+  at java.lang.Long.parseLong(Long.java:631)
+  at scala.collection.immutable.StringLike$class.toLong(StringLike.scala:276)
+  at scala.collection.immutable.StringOps.toLong(StringOps.scala:29)
+  ... 48 elided
+
+scala> 123.isInstanceOf[Long]
+res17: Boolean = false
+
+scala> 123.toLong.isInstanceOf[Long]
+res18: Boolean = true
+
+scala> 123.isInstanceOf[Any]
+res19: Boolean = true
+
+scala> 123.getClass
+res20: Class[Int] = int
+
+scala> 123.toLong.getClass
+res21: Class[Long] = long
+
+scala> "123".getClass
+res22: Class[_ <: String] = class java.lang.String
+
+scala> List(12,3).getClass
+res23: Class[_ <: List[Int]] = class scala.collection.immutable.$colon$colon
+
+scala> 
+
