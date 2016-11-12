@@ -20,6 +20,14 @@ object Collection1{
     //multiple type in one array will makes this all Double,i.e, Array[Double]
     val a = Array(1, 2.0, 33D, 400L)
     val a1 = Array[Number](1, 2.0, 33D, 400L)
+      
+    //tabulate demo  
+    val a2 = Array.tabulate(5)(_ + 1)
+    //Array[Int] = Array(1, 2, 3, 4, 5)
+      
+    //tabulate 2D demo
+    val matrix3 = Array.tabulate(3,3)((x,y) => (x,y))
+    //Array[Array[(Int, Int)]] = Array(Array((0,0), (0,1), (0,2)), Array((1,0), (1,1), (1,2)), Array((2,0), (2,1), (2,2)))
     
     println(a.deep.mkString(" "))
     println(a1.deep.mkString(" : "))
