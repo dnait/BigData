@@ -77,4 +77,17 @@ res151: Array[Int] = Array(1, 2, 200, 4, 5)
 scala> Array(Array(1,2),Array(3,4)).deep.toString
 res152: String = Array(Array(1, 2), Array(3, 4))
 
-
+scala> import scala.math._
+import scala.math._
+
+scala> sqrt(2)
+res135: Double = 1.4142135623730951
+
+scala> sqrt(2)
+res135: Double = 1.4142135623730951
+
+scala> pow(2,4)
+res136: Double = 16.0
+
+scala> min(3,pi)
+res137: Double = 3.0
