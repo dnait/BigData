@@ -65,6 +65,10 @@ object ArrayBuffer {
 
     //append one or more elemetns(uses a varargs parameters)
     strs2.append("The","End")    //ArrayBuffer(apple, ibm, yahoo, ibm, fb, google, ms, 123, xyz, The, End)
-
+    
+    //size
+    println(strs2.size)        //11    
+    println(strs2.length)      //11
+    
   }
 }
