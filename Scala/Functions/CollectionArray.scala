@@ -38,6 +38,7 @@ object Collection1{
     fruits(2) = "Apple"
     
     //Sorting Arrays
+    //Sorting.quickSort can also sort arrays with the base numeric types like Double, Float, and Int
     scala.util.Sorting.quickSort(fruits)
     println("QuickSort => " + fruits.deep.mkString(","))
    
