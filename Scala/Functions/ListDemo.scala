@@ -18,7 +18,11 @@ object ListDemo {
     
     //empty List
     val emptyList1: List[Nothing]= List()
+    
+    //cannot just initialize like this, or when we add new item, the list cannot recoginze
+    //cannot emptyList2 += "cat" fail even var emptyList2
     val emptyList2 = List()
+    val emptyList3 = "cat" :: emptyList2
     
       //use List.empty to initialize, and also use var
     var strs1 = List.empty[String]
@@ -26,13 +30,7 @@ object ListDemo {
     println(strs1)        //List(cat)
     
     
-    //use List.newBuilder[String] to create, by addition operator and result() to get the final list
-    //.newBuilder[String] can use val
-    val builder = List.newBuilder[String]
-    builder += "first"
-    builder += "second"
-    builder += "third"
-    println(builder.result())    //List(first,  second,  third)
+
     
     //remove duplicates with toSet.toList or .distinct
         //use .distinct
@@ -45,6 +43,9 @@ object ListDemo {
         //Convert to lowercase then get distinct strings
     val codes = List("abC", "Abc", "ABC", "xyz", "XyZ")
     println(codes.map(x => x.toLowerCase()).distinct)      //List(abc, xyz)
+    
+    //Cannot update
+    //codes(2) = "aa" failed, but ListBuffer is fine
     
     
     //2D list, List has no ofDim[Int] usage

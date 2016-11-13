@@ -34,6 +34,10 @@ object ListBufferDemo {
     println(x)      //ListBuffer(cat, dog, hamster)
     println(y)      //List(cat, dog, hamster)
     
+    //update
+    x(2) = "aa"
+    println(x)      //mutable.ListBuffer[String] = ListBuffer(cat, dog, aa)
+    
     var fruits = new collection.mutable.ListBuffer[String]()
 
     // add one element at a time to the ListBuffer
