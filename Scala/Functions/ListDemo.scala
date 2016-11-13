@@ -47,6 +47,12 @@ object ListDemo {
     //Cannot update
     //codes(2) = "aa" failed, but ListBuffer is fine
     
+    //But Vector can be .update
+    val vec = Vector(100, 5, 10, 20)
+    //vec(2) = -100  failed
+    val vec2 = vec.updated(2, -100)
+    println(vec2)        //immutable.Vector[Int] = Vector(100, 5, -100, 20)
+    
     
     //2D list, List has no ofDim[Int] usage
     val matrix = List(List(20,30), List(40,50), List(60,70))    //matrix: List[List[Int]] = List(List(20, 30), List(40, 50))
