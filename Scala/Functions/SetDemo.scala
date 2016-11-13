@@ -1,5 +1,7 @@
 package ScalaHandsOn
 
+import scala.collection.SortedSet
+
 object SetDemo {
   def main(args: Array[String]) {
     
@@ -32,8 +34,41 @@ object SetDemo {
     println(set.retain(_ > 2))   //only print()
     println(set)          //but set = Set(6, 3)
     
+    //use SortedSet
+    val s = scala.collection.SortedSet(10,4,8,2)
+    println(s)      //TreeSet(2, 4, 8, 10)
+    
+    val s1 = scala.collection.SortedSet("cherry", "kiwi", "apple")
+    println(s1)     //TreeSet(apple, cherry, kiwi)
+    
+    //use LinkedHashSet saves elements in the order in which they were inserted
+    var s2 = scala.collection.mutable.LinkedHashSet(10, 4, 8, 2)
+    println(s2)
     
     
+    //Customized object sort
+    //need to import scala.collection.SortedSet    
+     val mike = new Person("Mike")
+     val chris = new Person("Chris")
+     val molly = new Person("molly")
+     val tyler = new Person("Tyler")
+     val s3 = SortedSet(molly, tyler, chris,mike)
+     println(s3)    //TreeSet(Chris, Mike, Tyler, molly)
     
   }
+  
+}
+
+class Person(val name: String) extends Ordered [Person] {
+  override def toString = name
+  //return 0 if the same, negative if this < that, positive if this > that
+  def compare(that: Person) = {
+    if (this.name == that.name)
+      0
+    else if (this.name > that.name)
+      1
+    else 
+      -1
+  }
+
 }
