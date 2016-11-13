@@ -140,6 +140,14 @@ object ListBufferDemo {
     println(List(1,2,3,4,5).exists(_ < 6))      //true
     println(List(1,2,3,4,5).exists(x => x < 6))      //true
     
+    //The fourth way to get Sum
+    //(0 /: evens)(_ + _) and (evens :\ 0)(_ + _)
+    val evens = List(2, 4, 6)
+    println((0 /: evens)(_ + _))        //12
+    println((evens :\ 10)(_ + _))        //22
+    
+    
+    
     
     
   }
