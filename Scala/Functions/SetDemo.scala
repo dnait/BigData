@@ -34,6 +34,22 @@ object SetDemo {
     println(set.retain(_ > 2))   //only print()
     println(set)          //but set = Set(6, 3)
     
+    
+    //merge usign ++
+    val positive = Set(10, 11, 15)
+    val negative = Set(-2, -3, -15)
+    println(positive ++ negative)        //immutable.Set[Int] = Set(10, -3, -15, 11, -2, 15)
+    
+    
+    //Intersect is Case Sensitive
+    val codes1 = Set("java", "python", "c++", "scala", "SQL")
+    val codes2 = Set("Java", "Python","abc", "bcd", "efd")
+    println(codes1.intersect(codes2))        //Set()
+    
+    //Set use map to convert words to LowerCase, then compare
+    println(codes1.map(_.toLowerCase).intersect(codes2.map(_.toLowerCase)))   //Set(java, python)
+    
+    
     //use SortedSet
     val s = scala.collection.SortedSet(10,4,8,2)
     println(s)      //TreeSet(2, 4, 8, 10)
