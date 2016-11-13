@@ -10,6 +10,25 @@ package ScalaHandsOn
 */
 object ListBufferDemo {
   def main(args: Array[String]) {
+    
+        //How to randomly generate 10 random Integers bellow 100
+    val list = List.fill(10)(scala.util.Random.nextInt(100))
+    //List(55, 25, 95, 36, 11, 20, 74, 43, 87, 60)
+    
+    val seq = Seq.fill(10)(scala.util.Random.nextInt(100))
+    //Seq[Int] = List(59, 84, 78, 11, 43, 72, 47, 26, 25, 69)
+    
+    //use List.newBuilder[String] to create, by addition operator and result() to get the final list
+    //.newBuilder[String] 
+    val builder = List.newBuilder[String]
+    //scala.collection.mutable.Builder[String,List[String]] = ListBuffer()
+    
+    builder += "first"
+    builder += "second"
+    builder += "third"
+    println(builder.result())    //List(first,  second,  third)
+    
+    
     val x = collection.mutable.ListBuffer("cat","dog","hamster")
     val y = collection.mutable.ListBuffer("cat","dog","hamster").toList
     println(x)      //ListBuffer(cat, dog, hamster)
