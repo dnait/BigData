@@ -111,15 +111,19 @@ object MapKVDemo {
     //(B,3.0)
     //(C,2.0)
     //(D,1.0)
-    
-    
+       
     println(rating.keysIterator)      //non-empty iterator
     println(rating.valuesIterator)    //non-empty iterator
+
     
     //Reversing Keys and Values
-    //Being sure to assign the result to a new variable
     val reverseRating = for ((k,v) <- rating) yield (v,k)
     println(reverseRating)        //Map(4.0 -> A, 3.0 -> B, 2.0 -> C, 1.0 -> D)
+    
+    //filter
+    val ages = Map("steve" -> 20, "bob" -> 29, "joe" -> 60)
+    ages.filter(_._2 < 50)            //Map[String,Int] = Map(steve -> 20, bob -> 29)
+    ages.filter({case (name, age) =>  age < 200})
     
     println(reverseRating.mapValues(_.capitalize))  //Map(2 -> B, 3 -> C)
     
