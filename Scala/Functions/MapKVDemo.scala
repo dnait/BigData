@@ -1,5 +1,8 @@
 package ScalaHandsOn
 
+import scala.collection.immutable.TreeMap
+import scala.collection.immutable.ListMap
+
 object MapKVDemo {
   def main(args: Array[String]) {
     
@@ -16,6 +19,13 @@ object MapKVDemo {
     val nums2 = nums1 + ("two" -> 2) + ("three" -> 3) + ("four" -> 4)
     println(nums2)            //Map(one -> 1, two -> 2, three -> 3, four -> 4)
 
+    //var
+    var A:Map[Char,Int] = Map()
+    A += ('I' -> 1)
+    A += ('J' -> 5)
+    A += ('K' -> 10)
+    A += ('L' -> 100)
+    
     
     //remove key-value pair by using "-"
     val minusnums = nums2 - "two"
@@ -117,8 +127,73 @@ object MapKVDemo {
     //test a value exists in a map, use the valuesIterator with exists and contains
     val states = Map("AK" -> "Alaska","IL" -> "Illinois","KY" -> "Kentucky")
     println(states.valuesIterator.exists(_.contains("ucky")))      //true
+    
     // error : println(rating.valuesIterator.exists(_.contains(3.0)))
     //error: value contains is not a member of Double
 
+    
+    //Map merge by using ++ or map1.++() which will remove the dupliated keys
+    val rating1 = Map("A" -> 4.0, "B" -> 3.0)
+    val rating2 = Map("C" -> 2.0, "D" -> 1.0, "B" -> 3.0)
+    var ratings = rating1 ++ rating2
+    println(ratings)    //Map(A -> 4.0, B -> 3.0, C -> 2.0, D -> 1.0)
+    
+    //error: ratings = ratings + rating1.++(rating2)
+    ratings = rating1.++(rating2)
+    println(ratings)    //Map(A -> 4.0, B -> 3.0, C -> 2.0, D -> 1.0)
+    
+    //retain a map in mutable map
+    var mumap = collection.mutable.Map(1 -> "a", 2 -> "b", 3 -> "c")
+    println(mumap.retain((k,v) => k > 1))      //Map(2 -> b, 3 -> c)
+    
+    //transform a map in a mutable map
+    println(mumap.transform((k, v) => v.toUpperCase))   //Map(2 -> B, 3 -> C)
+    
+    //equals
+    val map1 = Map((10, true), (20, false))
+    val map2 = Map((20, false), (10, true))
+    val map3 = Map((20, true), (10, true))
+    if (map1.equals(map2)) println("Maps equal")         //Maps equal
+    if (!map1.equals(map3)) println("Maps not equal")    //Maps not equal
+    
+    //sort map
+    val employee = Map(("Bob", 28), ("Alice", 62), ("Fred", 44), ("Cindy", 20)) 
+    
+        //sort by key, using TreeMap, need to import scala.collection.immutable.TreeMap
+    val sortedMap = TreeMap(employee.toSeq:_*)
+    println(sortedMap)    //Map(Alice -> 62, Bob -> 28, Cindy -> 20, Fred -> 44)
+    
+        //sort the map by key, from low to high, using ListMap and sortBy
+    val sortedListMap = ListMap(employee.toSeq.sortBy(_._1):_*)
+    println(sortedListMap)    //Map(Alice -> 62, Bob -> 28, Cindy -> 20, Fred -> 44)
+    
+        //.toSeq.sortWith(condition):_*
+    val sortedListMap1 = ListMap(employee.toSeq.sortWith(_._1 > _._1):_*)
+    println(sortedListMap1)    //Map(Fred -> 44, Cindy -> 20, Bob -> 28, Alice -> 62)
+    
+    //find max 
+    val grades = Map("Al" -> 80, "Kim" -> 95, "Teri" -> 25, "Julia" -> 90)
+    println(grades.max)          //(Teri,85)
+    println(grades.min)          //(Al,80)
+    
+    //find key max, keysIterator is keys, plural
+    println(grades.keysIterator.max)        //Teri
+    println(grades.keysIterator.min)        //Al
+    
+    //find max with keysIterator.reduceLeft
+    println(grades.keysIterator.reduceLeft((x,y) => if (x > y) x else y))    //Teri
+    
+    //find the “largest” is the longest string in the key
+    println(grades.keysIterator.reduceLeft((x,y) => if (x.length > y.length) x else y))  ////Julia
+    
+    
+    //find max with valueIterator.max
+    println(grades.valuesIterator.max)        //90
+    println(grades.valuesIterator.min)        //25
+    
+    //find max with valuesIterator.reduceLeft
+    println(grades.valuesIterator.reduceLeft((x,y) => if (x > y) x else y))   //95
+    println(grades.valuesIterator.reduceLeft(_ max _))    //95
+      
   }
 }
