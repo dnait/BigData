@@ -121,6 +121,8 @@ object MapKVDemo {
     val reverseRating = for ((k,v) <- rating) yield (v,k)
     println(reverseRating)        //Map(4.0 -> A, 3.0 -> B, 2.0 -> C, 1.0 -> D)
     
+    println(reverseRating.mapValues(_.capitalize))  //Map(2 -> B, 3 -> C)
+    
     //contains
     if (rating.contains("A")) println(rating("A")) else println("Not Found")  //4.0
     
@@ -198,6 +200,35 @@ object MapKVDemo {
     //find max with valuesIterator.reduceLeft
     println(grades.valuesIterator.reduceLeft((x,y) => if (x > y) x else y))   //95
     println(grades.valuesIterator.reduceLeft(_ max _))    //95
+    
+/*
+ * mapValue vs transform
+ * m.mapValues(_ * 5)
+ * m.transform( (k,v) => v * 5 )
+with the transform function you can influence the result of the new values by the value of their keys.
+
+For example:
+val m = Map( "a" -> 2, "b" -> 3 )
+m.transform((key, value) => key + value) //Map[String, String](a -> a2, b -> b3)
+Doing this with mapValues will be quite hard.
+
+The next difference is that transform is strict, whereas mapValues will give you only a view, 
+which will not store the updated elements. It looks like this:
+ 
+protected class MappedValues[C](f: B => C) extends AbstractMap[A, C] with DefaultMap[A, C] {
+  override def foreach[D](g: ((A, C)) => D): Unit = for ((k, v) <- self) g((k, f(v)))
+  def iterator = for ((k, v) <- self.iterator) yield (k, f(v))
+  override def size = self.size
+  override def contains(key: A) = self.contains(key)
+  def get(key: A) = self.get(key).map(f)
+}
+
+So performance-wise it depends what is more effective. If f is expensive and you only access a few elements of the resulting map, mapValues might be better, since f is only applied on demand. Otherwise I would stick to map or transform.
+transform can also be expressed with map. Assume m: Map[A,B] and f: (A,B) => C, then
+m.transform(f) is equivalent to m.map{case (a, b) => (a, f(a, b))}
+*/
+    
+
       
   }
 }
