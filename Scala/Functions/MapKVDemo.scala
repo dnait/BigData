@@ -156,7 +156,11 @@ object MapKVDemo {
     if (map1.equals(map2)) println("Maps equal")         //Maps equal
     if (!map1.equals(map3)) println("Maps not equal")    //Maps not equal
     
-    //sort map
+    //sort map by creating sortedMap
+    val scores = scala.collection.immutable.SortedMap(("Bob", 8), ("Alice", 21), ("Fred", 17), ("Cindy", 15)) 
+    scores.foreach(x => print(x._1 + " " + x._2 + " "))  //Alice 21 Bob 8 Cindy 15 Fred 17 
+    
+    //sort with TreeMap, .toSeq.sortBy, .toSeq.sortWith(condition)
     val employee = Map(("Bob", 28), ("Alice", 62), ("Fred", 44), ("Cindy", 20)) 
     
         //sort by key, using TreeMap, need to import scala.collection.immutable.TreeMap
