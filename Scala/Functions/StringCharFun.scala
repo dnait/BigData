@@ -27,6 +27,16 @@ object StringCharFun {
     val id2 = "x" + "100"
     println(id1.equals(id2))       //Boolean = true
     
+    //.indices
+    "foo".indices                  //Range(0, 1, 2)
+    
+    //.init
+    "I love Yahoo".init            //String = I love Yaho
+    
+    //.isDefinedAt(index)
+    "foo".isDefinedAt(1)           //true
+    "foo".isDefinedAt(3)           //false
+    
     //complex equal function
     iscombineequals("abcd", "ab", "cd")        //abcd, true
     iscombineequals("catdog", "cat", "dog")    //catdog, true
