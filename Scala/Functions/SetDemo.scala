@@ -41,14 +41,15 @@ object SetDemo {
     println(positive ++ negative)        //immutable.Set[Int] = Set(10, -3, -15, 11, -2, 15)
     
     
-    //Intersect is Case Sensitive
+    //Intersect or .& is Case Sensitive
     val codes1 = Set("java", "python", "c++", "scala", "SQL")
     val codes2 = Set("Java", "Python","abc", "bcd", "efd")
     println(codes1.intersect(codes2))        //Set()
+    println(codes1.&(codes2))                //Set()
     
-    //Set use map to convert words to LowerCase, then compare
+    //Set use map to convert words to LowerCase, then compare, both are right
     println(codes1.map(_.toLowerCase).intersect(codes2.map(_.toLowerCase)))   //Set(java, python)
-    
+    println(codes1.map(_.toLowerCase).&(codes2.map(_.toLowerCase)))           //Set(java, python)
     
     //use SortedSet
     val s = scala.collection.SortedSet(10,4,8,2)
