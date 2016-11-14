@@ -211,6 +211,17 @@ object StringCharFun {
     str.indexOf('o')            //Int = 3
     str.endsWith("hoo")         //true
     str.filter(_ != 'o')        //I lve Yah
+    
+    str.filterNot(_ == 'o')     //I lve Yah
+    str.filter(_ == 'o')        //ooo, so we can tell how many o in the string
+    str.filter(_ == 'o').size   //3
+    str.count(_ == 'o')        //count is much faster than filter
+    
+    //filter can only count char, not string
+    "I am am am Yahoo".filter( _ == "am")       //"" empty string
+    "I am am am Yahoo".filter( _ == "am").size  //0
+    
+    "I am".getBytes.foreach(x => print(x + " "))   //73 32 97 109 
     str.isEmpty                 //false
     str.lastIndexOf('o')        //Int = 11
     str.lastIndexOf("Ya")       //Int = 7
