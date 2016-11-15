@@ -2,6 +2,30 @@ package ScalaHandsOn
 
 object AdvancedDemo {
   def main(args: Array[String]){
+    
+    //swap the key-values
+    val maplist = Map(1 -> "one", 2 -> "two")
+    println(maplist.map(_.swap))    //
+    println(maplist.map({case(k, v) => v -> k}))
+    
+    //interview question:
+    val list = Array("Mike,Hill", "Rose,Sori")
+    val res1 = list.map{case a => (a.split(",")(1) + " " + a.split(",")(0))}
+    val res2 = list.map(_.split(",")).map(x => x(1) + " " + x(0))
+    println(res2.toList)
+    println(res1.toList)
+    
+    
+    //Advanced interview questions
+    val lists = Array("Mike,Hill", "Rose,Sori","Catherine")
+    val res3 = lists.map{case x if x.contains(",,") => (x.split(",,")(1)+" "+x.split(",,")(0)) case x => x}
+     println(res3.toList)
+     
+    //Further Advanced interview questions
+    val lists1 = Array("Mike,,Hill", "Rose,,Sori","Catherine")
+    val res4 = lists.map{case x if x.contains(",,") => (x.split(",,")(1)+" "+x.split(",,")(0)) case x => x}
+    println(res3.toList)
+    
     val names = List("Al", "Christina", "Kim")
     val firstTen = (1 to 10).toList
     val fiveToFifteen = (5 to 15).toList
