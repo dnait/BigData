@@ -1,4 +1,5 @@
-1) Download hbase from https://hbase.apache.org/ (1.2.1)
+1) Download hbase from https://hbase.apache.org/ (1.2.4)
+http://shinyfeather.com/hbase/hbase-1.2.4-bin.tar.gz/hbase/conf/hbase-policy.xml
 
 2) untar and move to a convenient location. Rename the extracted folder to HBase
 
@@ -17,12 +18,12 @@
 
 	<property>
       <name>hbase.zookeeper.property.dataDir</name>
-      <value><Any Directory>/zookeeper</value>
+      <value><Any Directory>/zookeeper</value>   ##could be any fold, zookeeper is built in
    </property>
 
 4) In HBase/conf/hbase-env.sh 
 Update JAVA_HOME 
-On Macs : export JAVA_HOME=$(/usr/libexec/java_home)
+On Macs : How to find path: $/usr/libexec/java_home
 On Linux machines: Google for the Java home directory for your Linux and Java versions
 
 5) update .bash_profile on Mac/.bashrc on Linux
