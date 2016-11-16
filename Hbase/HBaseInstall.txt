@@ -22,11 +22,12 @@ http://shinyfeather.com/hbase/hbase-1.2.4-bin.tar.gz/hbase/conf/hbase-policy.x
    </property>
 
 4) In HBase/conf/hbase-env.sh 
-Update JAVA_HOME 
+Update JAVA_HOME, and remove #
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home
 On Macs : How to find path: $/usr/libexec/java_home
 On Linux machines: Google for the Java home directory for your Linux and Java versions
 
-5) update .bash_profile on Mac/.bashrc on Linux
+5) update .bash_profile on Mac vim ~/.bash_profile on Linux
 export HBASE_HOME=$HOME/HBase
 export PATH="$HBASE_HOME/bin:$PATH"
 
@@ -56,7 +57,7 @@ hbase(main):009:0> exit
 9) Stopping HBase
 $ ./bin/./local-regionservers.sh stop 3
 $ ls /tmp
-$ cat /tmp/hbase-<YOUR USER NAME>-2-master.pid|xargs kill -9
+$ cat /tmp/hbase-<YOUR USER NAME>-2-master.pid|xargs kill -9   ##stop master
 $ ./bin/stop-hbase.sh
 
-
+Michael WangAllen Hill
