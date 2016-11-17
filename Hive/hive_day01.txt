@@ -1,0 +1,4 @@
+[cloudera@quickstart ~]$ $sqoop import-all-tables \  -m 12 \  --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \  --username=retail_dba \  --password=cloudera \  --as-avrodatafile \  --warehouse-dir=/user/hive/warehouse/retail_stage.db
+
+$hivehive> create database sqoop_import;ok
+hive>dfs –ls /user/hive/warehouse;        will see a warehouse file
