@@ -1,0 +1,73 @@
+
+[cloudera@quickstart ~]$ touch testing
+[cloudera@quickstart ~]$ ls
+cloudera-manager  Downloads                   kerberos  Pictures   test.txt
+cm_api.py         eclipse                     lib       Public     Videos
+Desktop           enterprise-deployment.json  Music     Templates  workspace
+Documents         express-deployment.json     parcels   testing
+[cloudera@quickstart ~]$ mv testing test.txt
+mv: overwrite `test.txt'? yes
+[cloudera@quickstart ~]$ ls -ltr
+total 188
+drwxrwsr-x 9 cloudera cloudera  4096 Feb 19  2015 eclipse
+drwxrwxr-x 4 cloudera cloudera  4096 Aug 10 19:52 workspace
+
+[cloudera@quickstart ~]$ hadoop fs -ls /user/spark
+
+[cloudera@quickstart ~]$ hadoop fs -ls /user/cloudera
+
+[cloudera@quickstart ~]$ hadoop fs -mkdir /user/cloudera/sqoop_import
+[cloudera@quickstart ~]$ sqoop list-databases --connect "jdbc:mysql://quickstart.cloudera:3306" --username retail_dba --password cloudera
+
+information_schema
+retail_db
+
+[cloudera@quickstart ~]$ ps -fu hdfs
+
+[cloudera@quickstart ~]$ sqoop
+Warning: /usr/lib/sqoop/../accumulo does not exist! Accumulo imports will fail.
+Please set $ACCUMULO_HOME to the root of your Accumulo installation.
+Try 'sqoop help' for usage.
+
+[cloudera@quickstart ~]$ sqoop list-databases --connect "jdbc:mysql://quickstart.cloudera:3306" --username retail_dba --password cloudera
+information_schema
+retail_db
+
+[cloudera@quickstart ~]$ sqoop list-databases --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" --username retail_dba --password cloudera
+information_schema
+retail_db
+
+[cloudera@quickstart ~]$ sqoop list-tables --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" --username retail_dba --password cloudera
+categories
+customers
+departments
+order_items
+orders
+products
+
+[cloudera@quickstart ~]$ sqoop eval --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" --username retail_dba --password cloudera --query "select * from departments"
+
+--------------------------------------
+| department_id | department_name    | 
+--------------------------------------
+| 2           | Fitness              | 
+| 3           | Footwear             | 
+| 4           | Apparel              | 
+| 5           | Golf                 | 
+| 6           | Outdoors             | 
+| 7           | Fan Shop             | 
+--------------------------------------
+
+[cloudera@quickstart ~]$ sqoop eval \
+>   --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+>   --username retail_dba \
+>   --password cloudera \
+>   --query "select count(1) from order_items"
+
+NFO manager.MySQLManager: Preparing to use a MySQL streaming resultset.
+------------------------
+| count(1)             | 
+------------------------
+| 172198               | 
+------------------------
+[cloudera@quickstart ~]$ 
