@@ -21,6 +21,7 @@ public class selectGroupByJDBC {
       Statement stmt = con.createStatement();
       
       // execute statement
+      //hive> SELECT Dept,count(*) FROM employee GROUP BY DEPT;
       ResultSet res = stmt.executeQuery("SELECT Dept,count(*) " + "FROM employee GROUP BY DEPT; ");
       System.out.println(" Dept \t count(*)");
       
