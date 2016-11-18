@@ -1,4 +1,17 @@
 [cloudera@quickstart ~]$ $sqoop import-all-tables \  -m 12 \  --connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \  --username=retail_dba \  --password=cloudera \  --as-avrodatafile \  --warehouse-dir=/user/hive/warehouse/retail_stage.db
 
 $hivehive> create database sqoop_import;ok
-hive>dfs –ls /user/hive/warehouse;        will see a warehouse file
+hive>dfs –ls /user/hive/warehouse;        will see a scoop_import.db in this warehouseThe following data is a Comment, Row formatted fields such as Field terminator, Lines terminator, and Stored File type.
+
+COMMENT ‘Employee details’
+FIELDS TERMINATED BY ‘\t’
+LINES TERMINATED BY ‘\n’
+STORED IN TEXT FILE
+hive> CREATE TABLE IF NOT EXISTS employee ( eid int, name String,
+salary String, destination String)
+COMMENT ‘Employee details’
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ‘\t’
+LINES TERMINATED BY ‘\n’
+STORED AS TEXTFILE;
+
