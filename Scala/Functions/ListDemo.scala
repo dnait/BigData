@@ -97,6 +97,7 @@ object ListDemo {
     
     //Add elements at the end
     val addEndList1 = List(1,2,3) :+ 4      //List(1, 2, 3, 4)
+    val addHeadList1 = 0 +: List(1,2,3)     //List(0, 1, 2, 3)
     val addEndList2 = List(1,2,3) ::: List(4)      //List(1, 2, 3, 4)
 
     //merge two lists
