@@ -1,5 +1,17 @@
 makeRDD VS parallelize
-makeRDD has two operations: one is exactly same as parallelize, the second is to provide location of the data.
+
+makeRDD is identical to parallelize. And if you take a look at the implementation it simply calls parallelize:
+
+def makeRDD[T: ClassTag](
+    seq: Seq[T],
+    numSlices: Int = defaultParallelism): RDD[T] = withScope {
+  parallelize(seq, numSlices)
+}
+At the end of the day it is a matter of taste. One thing to consider is that makeRDD seems to be specific to Scala API. PySpark and internal SparkR API provide only parallelize.
+
+Note: There is a second implementation of makeRDD which allows you to set location preferences, but given a different signature it is not interchangeable with parallelize.
+
+examples:
 
 scala> val seq = List((1, List("yahoo1","ibm2","google3")), (2, List("yahoo1","google3")))seq: List[(Int, List[String])] = List((1,List(yahoo1, ibm2, google3)), (2,List(yahoo1, google3)))scala> val res = sc.makeRDD(seq)res: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[11] at makeRDD at <console>:26
 
