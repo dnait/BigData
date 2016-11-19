@@ -54,13 +54,16 @@ object RDDrandomsplitglom {
     
     
     //glom
-    //def glom(): RDD[Array[T]], convert [T] into Array[T], and put into serveral partitions
+    //def glom(): RDD[Array[T]], convert [T] into Array[T], and put into several partitions
     var rdd1 = sc.makeRDD(1 to 10, 3)
     println(rdd1.partitions.size)        //3
     
     rdd1.glom().collect
     //res30: Array[Array[Int]] = Array(Array(1, 2, 3), Array(4, 5, 6), Array(7, 8, 9, 10))
     
+    rdd1.glom().first      //Array[Int] = Array(1, 2, 3)
+    
+    //but glom() has no tail or head
     
     
     
