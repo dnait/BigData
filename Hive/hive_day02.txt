@@ -1,0 +1,103 @@
+[cloudera@quickstart ~]$ hive -v
+16/11/18 19:27:12 WARN mapreduce.TableMapReduceUtil: The hbase-prefix-tree module jar containing PrefixTreeCodec is not present.  Continuing without it.
+
+Logging initialized using configuration in jar:file:/usr/lib/hive/lib/hive-common-1.1.0-cdh5.8.0.jar!/hive-log4j.properties
+WARNING: Hive CLI is deprecated and migration to Beeline is recommended.
+hive> show databases;
+show databases
+OK
+default
+employee
+sqoop_import
+user
+userdb
+Time taken: 0.677 seconds, Fetched: 5 row(s)
+hive> show tables;
+show tables
+OK
+categories
+customers
+emp
+sample_07
+sample_073
+sample_074
+sample_075
+sample_076
+sample_077
+toodey1
+toodey2
+toodey3
+Time taken: 0.036 seconds, Fetched: 12 row(s)
+hive>set mapred.reduce.tasks=32;
+hive>set
+system:java.home=/usr/java/jdk1.7.0_67-cloudera/jre
+
+hive> hive -S -e "set" |grep warehouse;
+hive -S -e "set" |grep warehouse
+NoViableAltException(26@[])
+FAILED: ParseException line 1:0 cannot recognize input near 'hive' '-' 'S'
+
+[cloudera@quickstart ~]$ vi hivetest.hql
+[cloudera@quickstart ~]$ cat hivetest.hql
+hive demo code
+
+[cloudera@quickstart ~]$ hive -f /user/home/hivetest.hql
+16/11/18 20:04:13 WARN mapreduce.TableMapReduceUtil: The hbase-prefix-tree module jar containing PrefixTreeCodec is not present.  Continuing without it.
+
+Logging initialized using configuration in jar:file:/usr/lib/hive/lib/hive-common-1.1.0-cdh5.8.0.jar!/hive-log4j.properties
+Could not open input file for reading. (File file:/user/home/hivetest.hql does not exist)
+[cloudera@quickstart ~]$ 
+
+[cloudera@quickstart ~]$ vim hivetest.hql
+
+[cloudera@quickstart ~]$ cat hivetest.hql
+create database db1;
+create database db2;
+
+
+//for some reasons, hivetest.hql is created, but the system cannot find it
+[cloudera@quickstart ~]$ hive -f /user/home/hivetest.hql
+16/11/18 20:21:50 WARN mapreduce.TableMapReduceUtil: The hbase-prefix-tree module jar containing PrefixTreeCodec is not present.  Continuing without it.
+
+Logging initialized using configuration in jar:file:/usr/lib/hive/lib/hive-common-1.1.0-cdh5.8.0.jar!/hive-log4j.properties
+Could not open input file for reading. (File file:/user/home/hivetest.hql does not exist)
+
+
+hive> use employee;
+OK
+Time taken: 0.017 seconds
+
+//very convenient to show which database we are using
+hive> set hive.cli.print.current.db=true;
+hive (employee)> 
+
+
+//hot key with tab
+//hive (employee)> CRE then click tab will show hive (employee)> CREATE
+
+//hive can use linux commands as well
+hive (employee)> ! pwd;
+/home/cloudera
+
+hive (employee)> ! ls;
+categories.avsc
+categories.java
+cloudera-manager
+cm_api.py
+customers.avsc
+customers.java
+departments.avsc
+departments.java
+
+
+//Also can run hadoop commands
+hive (employee)> dfs -ls /;
+Found 6 items
+drwxrwxrwx   - hdfs  supergroup          0 2016-08-10 13:07 /benchmarks
+drwxr-xr-x   - hbase supergroup          0 2016-11-17 08:56 /hbase
+drwxr-xr-x   - solr  solr                0 2016-08-10 13:09 /solr
+drwxrwxrwt   - hdfs  supergroup          0 2016-10-17 13:27 /tmp
+drwxr-xr-x   - hdfs  supergroup          0 2016-10-20 18:23 /user
+drwxr-xr-x   - hdfs  supergroup          0 2016-08-10 13:09 /va
+
+
