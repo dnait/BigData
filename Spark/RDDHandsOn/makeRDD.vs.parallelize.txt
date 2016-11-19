@@ -1,0 +1,7 @@
+makeRDD VS parallelize
+makeRDD has two operations: one is exactly same as parallelize, the second is to provide location of the data.
+
+scala> val seq = List((1, List("yahoo1","ibm2","google3")), (2, List("yahoo1","google3")))seq: List[(Int, List[String])] = List((1,List(yahoo1, ibm2, google3)), (2,List(yahoo1, google3)))scala> val res = sc.makeRDD(seq)res: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[11] at makeRDD at <console>:26
+
+scala> val res1 = sc.parallelize(seq)
+res1: org.apache.spark.rdd.RDD[(Int, List[String])] = ParallelCollectionRDD[13] at parallelize at <console>:26scala> res.preferredLocations(res.partitions(0))res9: Seq[String] = List(yahoo1, ibm2, google3)scala> res.preferredLocations(res.partitions(9))res10: Seq[String] = List(yahoo1, google3)scala> val res = sc.parallelize(List(1,2,3))res: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[12] at parallelize at <console>:24scala> res.preferredLocations(res.partitions(0))res11: Seq[String] = List()scala> res.preferredLocations(res.partitions(1))res12: Seq[String] = List()
