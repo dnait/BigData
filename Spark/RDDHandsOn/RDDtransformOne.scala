@@ -76,6 +76,30 @@ object RDDtransformOne {
       //scala> rdd3.foldByKey(2)(_+_).collect
       //res49: Array[(String, Int)] = Array((A,6), (B,7), (C,3))
       
+      
+      
+      //multiply
+      val res35 = rdd3.foldByKey(0)(_*_)
+      println(res35.collect.mkString(","))      //(B,0),(A,0),(C,0)
+      
+      //scala> rdd3.foldByKey(0)(_*_).collect
+      //res52: Array[(String, Int)] = Array((A,0), (B,0), (C,0))
+      
+      val res36 = rdd3.foldByKey(1)(_*_)
+      //((B,1*1),(B,1*2)) = (B,1*2)
+      println(res36.collect.mkString(","))      //(B,2),(A,0),(C,1)
+      
+      val res37 = rdd3.foldByKey(2)(_*_)
+      println(res37.collect.mkString(","))      //(B,4),(A,0),(C,2) different with scala-shell result
+      
+      //scala> rdd3.foldByKey(2)(_*_).collect
+      //res54: Array[(String, Int)] = Array((A,0), (B,8), (C,2))
+      
+      //scala> rdd3.foldByKey(1)(_*_).collect
+      //res53: Array[(String, Int)] = Array((A,0), (B,2), (C,1))
+      
+      
+      
       //About function of combineByKey
       //def combineByKey[C](createCombiner: (V) => C, mergeValue: (C, V) => C, mergeCombiners: (C, C) => C): RDD[(K, C)]
       //def combineByKey[C](createCombiner: (V) => C, mergeValue: (C, V) => C, mergeCombiners: (C, C) => C, numPartitions: Int): RDD[(K, C)]
