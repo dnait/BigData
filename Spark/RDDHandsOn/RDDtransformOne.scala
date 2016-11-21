@@ -75,6 +75,11 @@ object RDDtransformOne {
       
       //scala> rdd3.foldByKey(2)(_+_).collect
       //res49: Array[(String, Int)] = Array((A,6), (B,7), (C,3))
+      
+      //About function of combineByKey
+      //def combineByKey[C](createCombiner: (V) => C, mergeValue: (C, V) => C, mergeCombiners: (C, C) => C): RDD[(K, C)]
+      //def combineByKey[C](createCombiner: (V) => C, mergeValue: (C, V) => C, mergeCombiners: (C, C) => C, numPartitions: Int): RDD[(K, C)]
+      //def combineByKey[C](createCombiner: (V) => C, mergeValue: (C, V) => C, mergeCombiners: (C, C) => C, partitioner: Partitioner, mapSideCombine: Boolean = true, serializer: Serializer = null): RDD[(K, C)]
   }
   
   
