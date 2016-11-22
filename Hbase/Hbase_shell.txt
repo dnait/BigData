@@ -1,0 +1,196 @@
+[cloudera@quickstart ~]$ hbase shell
+16/11/21 20:01:31 INFO Configuration.deprecation: hadoop.native.lib is deprecated. Instead, use io.native.lib.available
+HBase Shell; enter 'help<RETURN>' for list of supported commands.
+Type "exit<RETURN>" to leave the HBase Shell
+Version 1.2.0-cdh5.8.0, rUnknown, Thu Jun 16 12:46:57 PDT 2016
+
+hbase(main):001:0> create 'video','ratings','channel'
+0 row(s) in 1.5140 seconds
+
+=> Hbase::Table - video
+hbase(main):002:0> list
+TABLE                                                                           
+BankAccounts                                                                    
+Sales                                                                           
+customer                                                                        
+video                                                                           
+4 row(s) in 0.0160 seconds
+
+=> ["BankAccounts", "Sales", "customer", "video"]
+hbase(main):003:0> describe 'video'
+Table video is ENABLED                                                          
+video                                                                           
+COLUMN FAMILIES DESCRIPTION                                                     
+{NAME => 'channel', DATA_BLOCK_ENCODING => 'NONE', BLOOMFILTER => 'ROW', REPLICA
+TION_SCOPE => '0', VERSIONS => '1', COMPRESSION => 'NONE', MIN_VERSIONS => '0', 
+TTL => 'FOREVER', KEEP_DELETED_CELLS => 'FALSE', BLOCKSIZE => '65536', IN_MEMORY
+ => 'false', BLOCKCACHE => 'true'}                                              
+{NAME => 'ratings', DATA_BLOCK_ENCODING => 'NONE', BLOOMFILTER => 'ROW', REPLICA
+TION_SCOPE => '0', VERSIONS => '1', COMPRESSION => 'NONE', MIN_VERSIONS => '0', 
+TTL => 'FOREVER', KEEP_DELETED_CELLS => 'FALSE', BLOCKSIZE => '65536', IN_MEMORY
+ => 'false', BLOCKCACHE => 'true'}                                              
+2 row(s) in 0.1260 seconds
+
+hbase(main):005:0> put 'video','Harry Potter','ratings:','5'
+0 row(s) in 0.0920 seconds
+
+hbase(main):006:0> put 'video','star war','ratings:this week','5'
+0 row(s) in 0.0140 seconds
+
+hbase(main):007:0> put 'video','star war','ratings:last week','4'
+0 row(s) in 0.0110 seconds
+
+hbase(main):008:0> put 'video','Harry Potter','ratings','4'
+0 row(s) in 0.0110 seconds
+
+hbase(main):009:0> put 'video','Harry Potter','ratings:this week','4'
+0 row(s) in 0.0090 seconds                           ^
+
+hbase(main):022:0> put 'video','Harry Potter','ratings:this week','6'
+0 row(s) in 0.0100 seconds
+
+hbase(main):023:0> get 'video','Harry Potter'
+COLUMN                CELL                                                      
+ ratings:             timestamp=1479787613314, value=4                          
+ ratings:this week    timestamp=1479787788595, value=6                          
+2 row(s) in 0.0200 seconds
+
+hbase(main):024:0> scan 'video'
+ROW                   COLUMN+CELL                                               
+ Harry Potter         column=ratings:, timestamp=1479787613314, value=4         
+ Harry Potter         column=ratings:this week, timestamp=1479787788595, value=6
+ star war             column=ratings:last week, timestamp=1479787577549, value=4
+ star war             column=ratings:this week, timestamp=1479787552960, value=5
+2 row(s) in 0.0260 seconds
+
+hbase(main):025:0> delete 'video','star war','ratings'
+0 row(s) in 0.0260 seconds
+
+hbase(main):027:0> get 'video','star war'
+COLUMN                CELL                                                      
+ ratings:last week    timestamp=1479787577549, value=4                          
+ ratings:this week    timestamp=1479787552960, value=5                          
+2 row(s) in 0.0130 seconds
+
+hbase(main):028:0> get 'video','Harry Potter'
+COLUMN                CELL                                                      
+ ratings:             timestamp=1479787613314, value=4                          
+ ratings:this week    timestamp=1479787788595, value=6                          
+2 row(s) in 0.0140 seconds
+
+hbase(main):031:0> describe 'video'
+Table video is ENABLED                                                          
+video                                                                           
+COLUMN FAMILIES DESCRIPTION                                                     
+{NAME => 'channel', DATA_BLOCK_ENCODING => 'NONE', BLOOMFILTER => 'ROW', REPLICA
+TION_SCOPE => '0', VERSIONS => '1', COMPRESSION => 'NONE', MIN_VERSIONS => '0', 
+TTL => 'FOREVER', KEEP_DELETED_CELLS => 'FALSE', BLOCKSIZE => '65536', IN_MEMORY
+ => 'false', BLOCKCACHE => 'true'}                                              
+{NAME => 'ratings', DATA_BLOCK_ENCODING => 'NONE', BLOOMFILTER => 'ROW', REPLICA
+TION_SCOPE => '0', VERSIONS => '1', COMPRESSION => 'NONE', MIN_VERSIONS => '0', 
+TTL => 'FOREVER', KEEP_DELETED_CELLS => 'FALSE', BLOCKSIZE => '65536', IN_MEMORY
+ => 'false', BLOCKCACHE => 'true'}                                              
+2 row(s) in 0.0430 seconds
+                    
+
+hbase(main):033:0> alter 'video',{NAME => 'ratings',VERSIONS => 3}
+Updating all regions with the new schema...
+1/1 regions updated.
+Done.
+0 row(s) in 1.9660 seconds
+
+hbase(main):034:0> describe 'video'
+Table video is ENABLED                                                          
+video                                                                           
+COLUMN FAMILIES DESCRIPTION                                                     
+{NAME => 'channel', DATA_BLOCK_ENCODING => 'NONE', BLOOMFILTER => 'ROW', REPLICA
+TION_SCOPE => '0', VERSIONS => '1', COMPRESSION => 'NONE', MIN_VERSIONS => '0', 
+TTL => 'FOREVER', KEEP_DELETED_CELLS => 'FALSE', BLOCKSIZE => '65536', IN_MEMORY
+ => 'false', BLOCKCACHE => 'true'}                                              
+{NAME => 'ratings', DATA_BLOCK_ENCODING => 'NONE', BLOOMFILTER => 'ROW', REPLICA
+TION_SCOPE => '0', VERSIONS => '3', COMPRESSION => 'NONE', MIN_VERSIONS => '0', 
+TTL => 'FOREVER', KEEP_DELETED_CELLS => 'FALSE', BLOCKSIZE => '65536', IN_MEMORY
+ => 'false', BLOCKCACHE => 'true'}                                              
+2 row(s) in 0.0330 seconds
+
+hbase(main):035:0> put 'video','Harry Potter','ratings:','7'
+0 row(s) in 0.0100 seconds
+
+hbase(main):036:0> get 'video','Harry Potter', {COLUMN=>'ratings',VERSIONS=>2}
+COLUMN                CELL                                                      
+ ratings:             timestamp=1479788099661, value=7                          
+ ratings:             timestamp=1479787613314, value=4                          
+ ratings:this week    timestamp=1479787788595, value=6                          
+3 row(s) in 0.0150 seconds
+
+hbase(main):037:0> count 'video'
+2 row(s) in 0.0230 seconds
+=> 2
+
+hbase(main):038:0> list
+TABLE                                                                           
+BankAccounts                                                                    
+Sales                                                                           
+customer                                                                        
+video                                                                           
+4 row(s) in 0.0080 seconds
+
+=> ["BankAccounts", "Sales", "customer", "video"]
+hbase(main):039:0> scan 'video'
+ROW                   COLUMN+CELL                                               
+ Harry Potter         column=ratings:, timestamp=1479788099661, value=7         
+ Harry Potter         column=ratings:this week, timestamp=1479787788595, value=6
+ star war             column=ratings:last week, timestamp=1479787577549, value=4
+ star war             column=ratings:this week, timestamp=1479787552960, value=5
+2 row(s) in 0.0170 seconds
+
+hbase(main):040:0> alter 'video', NAME => 'info'
+Updating all regions with the new schema...
+1/1 regions updated.
+Done.
+0 row(s) in 1.9520 seconds
+
+hbase(main):041:0> list
+TABLE                                                                           
+BankAccounts                                                                    
+Sales                                                                           
+customer                                                                        
+video                                                                           
+4 row(s) in 0.0180 seconds
+
+=> ["BankAccounts", "Sales", "customer", "video"]
+hbase(main):042:0> disable 'video'
+0 row(s) in 2.2910 seconds
+
+hbase(main):043:0> drop 'video'
+0 row(s) in 1.2780 seconds
+
+hbase(main):044:0> scan 'customer'
+ROW                   COLUMN+CELL                                               
+ Finch                column=order:amount, timestamp=1479702865424, value=100   
+ Finch                column=order:number, timestamp=1479702848295, value=STL-11
+ john                 column=order:amount, timestamp=1479702820029, value=15    
+ john                 column=order:number, timestamp=1479702802130, value=ORD-15
+2 row(s) in 0.0200 seconds
+
+hbase(main):045:0> list
+TABLE                                                                           
+BankAccounts                                                                    
+Sales                                                                           
+customer                                                                        
+3 row(s) in 0.0060 seconds
+
+=> ["BankAccounts", "Sales", "customer"]
+hbase(main):046:0> truncate 'customer'
+Truncating 'customer' table (it may take a while):
+ - Disabling table...
+ - Truncating table...
+0 row(s) in 3.3790 seconds
+
+hbase(main):047:0> scan 'customer'
+ROW                   COLUMN+CELL                                               
+0 row(s) in 0.3240 seconds
+
+hbase(main):048:0> 
+
+
