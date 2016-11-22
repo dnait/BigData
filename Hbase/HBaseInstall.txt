@@ -1,5 +1,7 @@
 1) Download hbase from https://hbase.apache.org/ (1.2.4)
-http://shinyfeather.com/hbase/hbase-1.2.4-bin.tar.gz/hbase/conf/hbase-policy.xml
+http://shinyfeather.com/hbase/
+hbase-1.2.4-bin.tar.gz
+/hbase/conf/hbase-policy.xml
 
 2) untar and move to a convenient location. Rename the extracted folder to HBase
 
@@ -59,5 +61,3 @@ $ ./bin/./local-regionservers.sh stop 3
 $ ls /tmp
 $ cat /tmp/hbase-<YOUR USER NAME>-2-master.pid|xargs kill -9   ##stop master
 $ ./bin/stop-hbase.sh
-
-Michael WangAllen Hill
