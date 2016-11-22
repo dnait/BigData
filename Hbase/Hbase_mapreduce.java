@@ -1,6 +1,7 @@
 package com.createHbase.app;
 
 //mapreduce
+//wordcount case，save words into word table in Hbase，MapReduce will retrieve data and put the wordcount result into stat table in Hbase.
 
 import java.io.IOException;
 import java.util.StringTokenizer;
