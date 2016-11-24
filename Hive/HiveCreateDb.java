@@ -12,7 +12,7 @@ public class HiveCreateDb {
 		//Register driver and create driver instance
 		Class.forName(driverName);
 		
-		//getconnection->createStatement->executeQuery(sql)
+		//getconnection -> createStatement -> executeQuery(sql)
 		Connection conn = DriverManager.getConnection("jdbc:hive://localhost:10000/default","","");
 		Statement stmt = conn.createStatement();
 		
