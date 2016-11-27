@@ -1,0 +1,98 @@
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 2.0.1
+      /_/
+         
+Using Scala version 2.11.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_60)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+
+Q46
+spark16/file01.txt
+
+1,9,5
+2,7,4
+3,8,3
+spark16/file02.txt
+
+1,g,h
+2,i,j
+3,k,l
+
+Load these two files as Spark RDD and join them to produce the below results
+
+(1, ((9,5), (g,h)))
+(2, ((7,4), (i,j)))
+(3, ((8,3), (k,l)))
+And write code snippet which will sum the second columns of above joined results (5+4+3)
+
+scala> val one = sc.textFile("spark1/file01.txt").map{_.split(",",-1) match {
+     | case Array(a,b,c) => (a,(b,c))}}
+one: org.apache.spark.rdd.RDD[(String, (String, String))] = MapPartitionsRDD[198] at map at <console>:25
+
+scala> val two = sc.textFile("spark1/file02.txt").map{_.split(",",-1) match {
+     | case Array(a,b,c) => (a,(b,c))}}
+two: org.apache.spark.rdd.RDD[(String, (String, String))] = MapPartitionsRDD[201] at map at <console>:25
+
+scala> one.collect
+res54: Array[(String, (String, String))] = Array((1,(9,5)), (2,(7,4)), (3,(8,3)))
+
+scala> val joined = one.join(two)
+joined: org.apache.spark.rdd.RDD[(String, ((String, String), (String, String)))] = MapPartitionsRDD[204] at join at <console>:29
+
+//It is wrong to calculate the sum of the second column of joined
+scala> val sum = joined.map{
+     | case (a,(b,c)) => b.toInt}.reduce(_+_)
+<console>:32: error: value toInt is not a member of (String, String)
+       case (a,(b,c)) => b.toInt}.reduce(_+_)
+                           ^
+//why? Then try to print joined, found it is nested structure
+scala> joined.collect
+res55: Array[(String, ((String, String), (String, String)))] = Array((3,((8,3),(k,l))), (1,((9,5),(g,h))), (2,((7,4),(i,j))))
+
+//My version:
+scala> val sum = joined.map{
+     | case (a,(b,c)) => b._2.toInt}.reduce(_+_)
+sum: Int = 12
+
+//Another version:
+scala> val sum = joined.map {
+     |     case (_, ((_, num2), (_, _))) => num2.toInt
+     | }.reduce(_ + _)
+sum: Int = 12
+
+
+
+Q48 About union
+
+scala> val au1 = sc.parallelize(List (("a" , Array(1,2)), ("b" , Array(1,2))))
+au1: org.apache.spark.rdd.RDD[(String, Array[Int])] = ParallelCollectionRDD[207] at parallelize at <console>:25
+
+scala> val au2 = sc.parallelize(List (("a" , Array(3)),   ("b" , Array(2))))
+au2: org.apache.spark.rdd.RDD[(String, Array[Int])] = ParallelCollectionRDD[208] at parallelize at <console>:25
+
+scala> au1.union(au2)
+res56: org.apache.spark.rdd.RDD[(String, Array[Int])] = UnionRDD[209] at union at <console>:30
+
+scala> au1.union(au2).collect
+res57: Array[(String, Array[Int])] = Array((a,Array(1, 2)), (b,Array(1, 2)), (a,Array(3)), (b,Array(2)))
+
+
+
+
+Q50 
+
+scala> val grouped = sc.parallelize(Seq(((1,"two"), List((3,4), (5,6)))))
+val flattened = grouped.flatMap {A => groupValues.map {value => B }}
+
+A case (key, groupValues)
+B (key._1, key._2, value._1, value._2)
+
+scala> val flattened = grouped.flatMap {case (k,groupVs) => groupVs.map {v => (k._1, k._2, v._1, v._2)}}
+flattened: org.apache.spark.rdd.RDD[(Int, String, Int, Int)] = MapPartitionsRDD[233] at flatMap at <console>:27
+
+scala> flattened.collect
+res60: Array[(Int, String, Int, Int)] = Array((1,two,3,4), (1,two,5,6))
