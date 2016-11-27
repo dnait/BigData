@@ -1,0 +1,67 @@
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 2.0.1
+      /_/
+         
+Using Scala version 2.11.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_60)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> val manager = sc.textFile("spark1/EmployeeManager.csv")
+manager: org.apache.spark.rdd.RDD[String] = spark1/EmployeeManager.csv MapPartitionsRDD[1] at textFile at <console>:24
+
+scala> val managerRDD = manager.map(x=> (x.split(","))(0), x.split(",")(1))
+<console>:26: error: too many arguments for method map: (f: String => U)(implicit evidence$3: scala.reflect.ClassTag[U])org.apache.spark.rdd.RDD[U]
+       val managerRDD = manager.map(x=> (x.split(","))(0), x.split(",")(1))
+                                   ^
+
+scala> val managerRDD = manager.map(x=> (x.split(","))(0), x.split(",")(1)))
+<console>:1: error: ';' expected but ')' found.
+val managerRDD = manager.map(x=> (x.split(","))(0), x.split(",")(1)))
+                                                                    ^
+
+scala> val managerRDD = manager.map(x=> (x.split(",")(0), x.split(",")(1)))
+managerRDD: org.apache.spark.rdd.RDD[(String, String)] = MapPartitionsRDD[2] at map at <console>:26
+
+scala> managerRDD.collect
+res0: Array[(String, String)] = Array((1,Miles), (2,Quark), (3,Keiko), (4,Julian), (5,Ben), (6,Julian), (7,Leeta), (8,Martok), (9,Nog), (10,Keiko))
+
+scala> val salary = sc.textFile("spark1/EmployeeSalary.csv")
+salary: org.apache.spark.rdd.RDD[String] = spark1/EmployeeSalary.csv MapPartitionsRDD[4] at textFile at <console>:24
+
+scala> val salaryRDD = salary.map(x=>(x.split(",")(0), x.split(",")(1)))
+salaryRDD: org.apache.spark.rdd.RDD[(String, String)] = MapPartitionsRDD[5] at map at <console>:26
+
+scala> val nameRDD = sc.textFile("spark1/EmployeeName.csv").map(x=>(x.split(",")(0), x.split(",")(1)))
+nameRDD: org.apache.spark.rdd.RDD[(String, String)] = MapPartitionsRDD[8] at map at <console>:24
+
+scala> val join = nameRDD.join(salaryRDD).join(managerRDD)
+join: org.apache.spark.rdd.RDD[(String, ((String, String), String))] = MapPartitionsRDD[14] at join at <console>:34
+
+scala> join.collect
+res1: Array[(String, ((String, String), String))] = Array((4,((Quark,21000),Julian)), (8,((Jadzia,38000),Martok)), (6,((Gowron,220000),Julian)), (2,((Hugh,22100),Quark)), (7,((Will,307000),Leeta)), (5,((Weyoun,318000),Ben)), (9,((Hugh,18100),Nog)), (3,((Deanna,4650),Keiko)), (1,((Jean-Luc,2000),Miles)), (10,((Odo,19100),Keiko)))
+
+scala> val joinData = join.sortByKey
+<console>:36: error: missing argument list for method sortByKey in class OrderedRDDFunctions
+Unapplied methods are only converted to functions when a function type is expected.
+You can make this conversion explicit by writing `sortByKey _` or `sortByKey(_,_)` instead of `sortByKey`.
+       val joinData = join.sortByKey
+                           ^
+
+scala> val joinData = join.sortByKey()
+joinData: org.apache.spark.rdd.RDD[(String, ((String, String), String))] = ShuffledRDD[17] at sortByKey at <console>:36
+
+scala> joinData.collect
+res2: Array[(String, ((String, String), String))] = Array((1,((Jean-Luc,2000),Miles)), (10,((Odo,19100),Keiko)), (2,((Hugh,22100),Quark)), (3,((Deanna,4650),Keiko)), (4,((Quark,21000),Julian)), (5,((Weyoun,318000),Ben)), (6,((Gowron,220000),Julian)), (7,((Will,307000),Leeta)), (8,((Jadzia,38000),Martok)), (9,((Hugh,18100),Nog)))
+
+scala> val finalData = joinData.map(v=> (v._1,v._2._1._1,v._2._1._2,v._2._2))
+finalData: org.apache.spark.rdd.RDD[(String, String, String, String)] = MapPartitionsRDD[18] at map at <console>:38
+
+scala> finalData.collect
+res3: Array[(String, String, String, String)] = Array((1,Jean-Luc,2000,Miles), (10,Odo,19100,Keiko), (2,Hugh,22100,Quark), (3,Deanna,4650,Keiko), (4,Quark,21000,Julian), (5,Weyoun,318000,Ben), (6,Gowron,220000,Julian), (7,Will,307000,Leeta), (8,Jadzia,38000,Martok), (9,Hugh,18100,Nog))
+
+scala> finalData.saveAsTextFile("spark1/q37res.txt")
+
+scala> 
