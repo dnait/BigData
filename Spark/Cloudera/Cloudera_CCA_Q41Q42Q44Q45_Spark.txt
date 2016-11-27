@@ -1,0 +1,155 @@
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 2.0.1
+      /_/
+         
+Using Scala version 2.11.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_60)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+Q41 CSV
+id, topic, hits
+myself, python, 100
+ks, scala, 80
+ryan, java, 55
+fain, javascript, 111
+cosmo, html, 70
+Remove the header part and create RDD of values as below, for all rows. And also if id is "myself" than filter out row
+Map(id -> om, topic -> scala, hits -> 120)
+
+
+scala> val fileRdd = sc.textFile("spark1/user.csv").map(line=>line.split(",").map(_.trim))
+fileRdd: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[81] at map at <console>:25
+
+scala> val header = fileRdd.first
+header: Array[String] = Array(id, topic, hits)
+
+scala> val body = fileRdd.filter(_(0)!=header(0))
+body: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[82] at filter at <console>:29
+
+scala> val zipped = header.zip(body).toMap
+<console>:31: error: type mismatch;
+ found   : org.apache.spark.rdd.RDD[Array[String]]
+ required: scala.collection.GenIterable[?]
+       val zipped = header.zip(body).toMap
+                               ^
+
+scala> val zippped = body.map(x=>header.zip(x).toMap)
+zippped: org.apache.spark.rdd.RDD[scala.collection.immutable.Map[String,String]] = MapPartitionsRDD[83] at map at <console>:31
+
+
+scala> zipped.collect
+res21: Array[scala.collection.immutable.Map[String,String]] = Array(Map(id -> myself, topic -> python, hits -> 100), Map(id -> ks, topic -> scala, hits -> 80), Map(id -> ryan, topic -> java, hits -> 55), Map(id -> fain, topic -> javascript, hits -> 111), Map(id -> cosmo, topic -> html, hits -> 70))
+
+
+scala> val filtered = zipped.filter(maps=>maps("id")!="myself")
+filtered: org.apache.spark.rdd.RDD[scala.collection.immutable.Map[String,String]] = MapPartitionsRDD[85] at filter at <console>:37
+
+scala> filtered
+res22: org.apache.spark.rdd.RDD[scala.collection.immutable.Map[String,String]] = MapPartitionsRDD[85] at filter at <console>:37
+
+scala> filtered.collect
+res23: Array[scala.collection.immutable.Map[String,String]] = Array(Map(id -> ks, topic -> scala, hits -> 80), Map(id -> ryan, topic -> java, hits -> 55), Map(id -> fain, topic -> javascript, hits -> 111), Map(id -> cosmo, topic -> html, hits -> 70))
+
+Result:
+Map(id -> ks, topic -> scala, hits -> 80)
+Map(id -> ryan, topic -> java, hits -> 55)
+
+Q42:
+given a file named spark7/EmployeeName.csv (id,name).
+
+Load this file from hdfs and sort it by name and save it back as (id,name) in results directory. However, make sure while saving it should be able to write in a single file
+
+oneline coding:
+scala> val res = sc.textFile("spark1/EmployeeName.csv").map(x=>(x.split(",")(0), x.split(",")(1))).map(_.swap).sortByKey().map(_.swap)
+res: org.apache.spark.rdd.RDD[(String, String)] = MapPartitionsRDD[119] at map at <console>:25
+
+scala> res.repartition(1).saveAsTextFile("spark1/q42res2")
+
+Q43
+You have been given a file named spark/data.csv (type,name).
+Load this file from hdfs and save it in a single file and as (id, (all names of same type)) in results directory.
+
+scala> val nameRdd = sc.textFile("spark1/data.csv").map(x=>(x.split(",")(0), x.split(",")(1)))
+nameRdd: org.apache.spark.rdd.RDD[(String, String)] = MapPartitionsRDD[131] at map at <console>:25
+
+scala> val combineRdd = nameRdd.combineByKey(List(_),
+     | (x:List[String],y:String)=> y::x,
+     | (x:List[String],y:List[String])=> x:::y)
+combineRdd: org.apache.spark.rdd.RDD[(String, List[String])] = ShuffledRDD[132] at combineByKey at <console>:27
+
+scala> combineRdd.collect
+res32: Array[(String, List[String])] = Array((search,List(yahoo, google, bing)), (game,List(blizzard)), (news,List(newyorktimes, bbc, aol)), (video,List(netflix, youtube, twitch)), (wood,List(table)))
+
+scala> 
+
+Q44 With the following free text field as input in web ui.
+
+Name : String
+Subscription Date : String
+Rating : String
+
+And servey data has been saved in a file called spark9/feedback.txt
+
+Christopher|Jan 11, 2015|5
+Kapil|11 Jan, 2015|5
+Tnomas|6/17/2014|5
+John|22-08-2013|5
+Mithun|2013|5
+Jitendra || 5
+Write a spark program using regular expression which will filter all the valid dates and save in two separate file (good record and bad record)
+
+val regl ="""(\d+)\s(\w{3})(,)\s(\d{4})""".r    //11 Jan, 2015
+val reg2 ="""(\d+)(\/)(\d+)(\/)(\d{4})""".r     //6/17/2014
+val reg3 ="""(\d+)(-)(\d+)(-)(\d{4})""".r       //22-08-2013
+val reg4="""(\w{3})\s(\d+)(,)\s(\d{4})""".r     //Jan 11, 2015
+
+
+scala>  val feedbackRdd = sc.textFile("spark1/feedback.txt").map(line => line.split('|'))
+feedbackRdd: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[156] at map at <console>:25
+
+scala> val badRes = feedbackRdd.filter(x=> !(reg1.pattern.matcher(x(1).trim).matches | reg2.pattern.matcher(x(1).trim).matches | reg3.pattern.matcher(x(1).trim).matches))
+badRes: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[157] at filter at <console>:33
+
+scala> badRes.collect
+res42: Array[Array[String]] = Array(Array(Christopher, Jan 11, 2015, 5), Array(Mithun, 2013, 5), Array("Jitendra ", "", " 5"))
+
+scala> val validRes = feedbackRdd.filter(x => (reg1.pattern.matcher(x(1).trim).matches | reg2.pattern.matcher(x(1).trim).matches | reg2.pattern.matcher(x(1).trim).matches))
+validRes: org.apache.spark.rdd.RDD[Array[String]] = MapPartitionsRDD[158] at filter at <console>:31
+
+scala> validRes.collect
+res43: Array[Array[String]] = Array(Array(Kapil, 11 Jan, 2015, 5), Array(Tnomas, 6/17/2014, 5))
+
+//However, it is wrong to save results directly since it is Array[String]，
+scala> validRes.repartition(1).saveAsTextFile("spark1/q44good.txt")
+scala> badRes.repartition(1).saveAsTextFile("spark1/q44bad.txt")
+You will get reference like these:
+[Ljava.lang.String;@444d0841
+[Ljava.lang.String;@f224bf8
+[Ljava.lang.String;@3d658ab7
+
+//So we need to map the element first, then save to the file.
+
+scala> val valid = validRes.map(x => (x(0),x(1),x(2)))
+valid: org.apache.spark.rdd.RDD[(String, String, String)] = MapPartitionsRDD[169] at map at <console>:33
+
+scala> val bad = badRes.map(x=> (x(0),x(1),x(2)))
+bad: org.apache.spark.rdd.RDD[(String, String, String)] = MapPartitionsRDD[170] at map at <console>:35
+
+scala> valid.repartition(1).saveAsTextFile("spark1/q44validres.txt")
+scala> bad.repartition(1).saveAsTextFile("spark1/q44badres.txt")
+
+Now results look normal:
+(Kapil,11 Jan, 2015,5)
+(Tnomas,6/17/2014,5)
+
+
+
+
+Q45 : You have been given an RDD as below, val rdd: RDD [Array [Byte]] Now you have to save this RDD as a SequenceFile. And below is the code snippet.
+
+import org.apache.hadoop.io.compress.GzipCodec 
+
+rdd.map( bytesArray => (NullWritable.get(), new BytesWritable(bytesArray))).saveAsSequenceFile("/output/path",classOf[GzipCodec])
