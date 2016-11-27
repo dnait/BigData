@@ -9,13 +9,11 @@ Using Scala version 2.11.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_60)
 Type in expressions to have them evaluated.
 Type :help for more information.
 
+Q37 join and break nest List
+
 scala> val manager = sc.textFile("spark1/EmployeeManager.csv")
 manager: org.apache.spark.rdd.RDD[String] = spark1/EmployeeManager.csv MapPartitionsRDD[1] at textFile at <console>:24
 
-scala> val managerRDD = manager.map(x=> (x.split(","))(0), x.split(",")(1))
-<console>:26: error: too many arguments for method map: (f: String => U)(implicit evidence$3: scala.reflect.ClassTag[U])org.apache.spark.rdd.RDD[U]
-       val managerRDD = manager.map(x=> (x.split(","))(0), x.split(",")(1))
-                                   ^
 
 scala> val managerRDD = manager.map(x=> (x.split(","))(0), x.split(",")(1)))
 <console>:1: error: ';' expected but ')' found.
@@ -65,3 +63,33 @@ res3: Array[(String, String, String, String)] = Array((1,Jean-Luc,2000,Miles), (
 scala> finalData.saveAsTextFile("spark1/q37res.txt")
 
 scala> 
+
+
+
+
+Q38 Using broadcast to filter words in the black list
+
+scala> val words = sc.textFile("spark1/Content.txt").flatMap(_.split(" "))
+words: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[10] at flatMap at <console>:24
+
+scala> val removeRdd = sc.textFile("spark1/remove.txt").flatMap(_.split(",")).map(_.trim)
+removeRdd: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[14] at map at <console>:24
+
+scala> val bRemove = sc.broadcast(removeRdd.collect().toList)
+bRemove: org.apache.spark.broadcast.Broadcast[List[String]] = Broadcast(7)
+
+scala> val filtered = words.filter{case (word) => !bRemove.value.contains(word)} 
+filtered: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[15] at filter at <console>:30
+
+scala> filtered.collect
+res1: Array[String] = Array(Jingle, bells, jingle, bells, jingle, all, way, Oh, what, fun, it, is, to, ride, in, one, horse, open, sleigh, Ladies, and, gentlemen, I, give, you, jingle, bass, Merry, Christmas, Dashing, through, snow, On, one, horse, open, sleigh, O, er, fields, we, go, Laughing, all, way, Bells, on, bobtail, ring, Making, spirits, bright, What, fun, it, is, to, ride, and, sing, sleighing, song, tonight, Jingle, bells, jingle, bells, jingle, all, way, Oh, what, fun, it, is, to, ride, in, one, horse, open, sleigh, Jingle, bells, jingle, bells, jingle, all, way, Oh, what, fun, it, is, to, ride, in, one, horse, open, sleigh, Let, me, hear, you, say, What, fun, it, is, to, sing, sleighing, song, tonight, Dashing, through, snow, On, one, horse, open, sleigh, O, er, fields, we,...
+scala> val wordCount = filtered.map(x => (x,1)).reduceByKey(_+_)
+wordCount: org.apache.spark.rdd.RDD[(String, Int)] = ShuffledRDD[17] at reduceByKey at <console>:32
+
+scala> wordCount.collect
+res2: Array[(String, Int)] = Array((hear,1), (Bells,2), (spirits,1), (is,5), (bells,6), (bright,1), (ride,4), (Christmas,1), (one,5), (we,2), (Dashing,2), (ring,2), (Ladies,1), (What,2), (go,2), (what,3), (sleighing,2), (open,5), (sleigh,5), (me,1), (Laughing,2), (jingle,7), (Let,1), (it,5), (Making,1), (you,2), (song,2), (sing,2), (bobtail,2), (on,2), (say,1), (O,2), (bass,1), (fields,2), (all,5), (through,2), (I,1), (to,5), (in,3), (Oh,3), (gentlemen,1), (Jingle,3), (tonight,2), (er,2), (horse,5), (fun,5), (and,2), (snow,2), (On,2), (Merry,1), (give,1), (way,5))
+
+scala> wordCount.saveAsTextFile("spark1/Q38res.txt")
+
+scala> 
+
