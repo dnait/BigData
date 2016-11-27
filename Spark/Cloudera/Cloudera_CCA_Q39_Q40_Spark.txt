@@ -1,0 +1,51 @@
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 2.0.1
+      /_/
+         
+Using Scala version 2.11.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_60)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+Q39 filter words ("a","the","an", "as", "a","with","this","these","is","are","in","for","to","and","The","of") 
+sorted by word count in reverse order.
+output:
+import org.apache.hadoop.io.compress.GzipCodec
+
+scala> val threefiles = sc.textFile("spark1/file1.txt,spark1/file2.txt,spark1/file3.txt").flatMap(_.split(" ")).map(_.trim)
+threefiles: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[27] at map at <console>:24
+
+
+scala> val removeRdd = sc.parallelize(List("a","the","an", "as", "a","with","this","these","is","are","in","for","to","and","The","of"))
+removeRdd: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[23] at parallelize at <console>:24
+
+
+scala> val filtered = threefiles.subtract(removeRdd).map(word=>(word,1)).reduceByKey(_+_)
+filtered: org.apache.spark.rdd.RDD[(String, Int)] = ShuffledRDD[33] at reduceByKey at <console>:28
+
+
+scala> val swap= filtered.map(_.swap)
+swap: org.apache.spark.rdd.RDD[(Int, String)] = MapPartitionsRDD[34] at map at <console>:30
+
+
+scala> val sortedOutput = swap.sortByKey(false)
+sortedOutput: org.apache.spark.rdd.RDD[(Int, String)] = ShuffledRDD[37] at sortByKey at <console>:32
+
+scala> sortedOutput.collect
+res4: Array[(Int, String)] = Array((7,jingle), (6,bells), (4,ride), (4,one), (4,all), (4,way), (4,it), (4,fun), (4,horse), (4,open), (4,sleigh), (3,Oh), (3,Jingle), (3,what), (2,you), (2,ho), (1,Bells), (1,Ho), (1,bright), (1,say), (1,Christmas), (1,fields), (1,through), (1,Dashing), (1,ring), (1,sleighing), (1,On), (1,me), (1,Laughing), (1,spirits), (1,Making), (1,song), (1,sing), (1,bobtail), (1,O), (1,I), (1,we), (1,gentlemen), (1,go), (1,give), (1,hear), (1,Let), (1,on), (1,bass), (1,A), (1,Ladies), (1,er), (1,tonight), (1,What), (1,snow), (1,Merry))
+
+scala> sortedOutput.saveAsTextFile("spark1/Q39res.txt")
+
+scala> import org.apache.hadoop.io.compress.GzipCodec
+import org.apache.hadoop.io.compress.GzipCodec
+
+scala> sortedOutput.saveAsTextFile("spark1/compressQ39res",classOf[GzipCodec])
+
+
+scala> sortedOutput.saveAsTextFile("spark1/compreQ39RES",Some(classOf[org.apache.hadoop.io.compress.GzipCodec]))
+<console>:36: error: type mismatch;
+ found   : Some[Class[org.apache.hadoop.io.compress.GzipCodec]]
+ required: Class[_ <: org.apache.hadoop.io.compress.CompressionCodec]
+       sortedOutput.saveAsTextFile("spark1/compreQ39RES",Some(classOf[org.apache.hadoop.io.compress.GzipCodec]))
