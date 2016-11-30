@@ -5,7 +5,7 @@ CREATE TABLE deck_of_cards (
 COLOR string,
 SUIT string,
 PIP string)
-ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 STORED AS TEXTFILE;
 
 --Download deckofcards.txt from github repository www.github.com/dgadiraju/data
