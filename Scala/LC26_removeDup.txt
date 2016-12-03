@@ -1,0 +1,52 @@
+26. Remove Duplicates from Sorted Array with java, python, scala
+
+public class Solution {
+    public int removeDuplicates(int[] nums) {
+        if (nums == null || nums.length == 0) return 0;
+        int index = 1; 
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[index - 1] != nums[i]) {
+                nums[index] = nums[i];
+                index++;
+            }
+        }
+        return index;
+    }
+}
+
+
+Python doesn't support ++, but you can do:
+number += 1
+//python:
+class Solution(object):
+    def removeDuplicates(self, nums):
+        if(len(nums) ==0):
+            return 0
+        index = 1
+        for i in xrange (1, len(nums)):
+            if (nums[index - 1] != nums[i]):
+                nums[index] = nums[i]
+                index += 1
+        return index
+
+//Scala
+object _26removeDuplicate {
+  def main(args: Array[String]) {      
+    val myList = Array(1,2,2,3)
+    val res:Int = removeDuplicates(myList)
+    println(res)
+  }
+    
+  def removeDuplicates(nums: Array[Int]): Int ={
+          if (nums == null || nums.size == 0) return 0
+          var index: Int = 1
+          //1 to nums.size - 1, not nums.size - 1, or IndexOutOfBoundsException
+          for (i <- 1 to nums.size - 1) {
+            if (nums(index - 1) != nums(i)) {
+              nums(index) = nums(i)
+              index += 1
+            }
+          }
+          index
+   }
+}
