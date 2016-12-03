@@ -28,6 +28,17 @@ class Solution(object):
                 nums[index] = nums[i]
                 index += 1
         return index
+        
+// 80. Remove Duplicates from Sorted Array IIclass Solution(object):
+    def removeDuplicates(self, nums):
+        if (len(nums) <= 2):
+            return len(nums)
+        index = 2
+        for i in xrange(2, len(nums)):
+            if (nums[index - 2] != nums[i]): 
+               nums[index] = nums[i]
+               index = index + 1
+        return index       
 
 //Scala
 object _26removeDuplicate {
