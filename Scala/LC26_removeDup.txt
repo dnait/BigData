@@ -47,7 +47,8 @@ object _26removeDuplicate {
     val res:Int = removeDuplicates(myList)
     println(res)
   }
-    
+  
+  
   def removeDuplicates(nums: Array[Int]): Int ={
           if (nums == null || nums.size == 0) return 0
           var index: Int = 1
