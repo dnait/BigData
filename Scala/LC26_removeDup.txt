@@ -29,7 +29,7 @@ class Solution(object):
                 index += 1
         return index
         
-// 80. Remove Duplicates from Sorted Array IIclass Solution(object):
+// 80. Remove Duplicates from Sorted Array II
     def removeDuplicates(self, nums):
         if (len(nums) <= 2):
             return len(nums)
