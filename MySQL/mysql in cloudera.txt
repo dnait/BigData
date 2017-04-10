@@ -1,0 +1,44 @@
+Open Cloudera:
+$ mysql -u root -p
+
+mysql> show databases;
+
+mysql> use products;
+
+mysql> show tables;
+
+mysql> select count(produt_id) from products;
+
+mysql> select product_name, product_price from products order by product_price desc limit 10;
+
+mysql> select product_name, product_price from products order by product_price asc limit 10;
+
+Now SOLE E35 Elliptical’s price should change from 1999.99 to 2010.99
+
+mysql> update products set products_price=2010.99 where product_name=’SOLE E35 Elliptical’;
+
+Query OK, 1 row affected (0.00 sec)
+
+mysql>select product_name, product_price from products order by product_price desc limit5;
+
+Add one more column like isCritical
+mysql> alter table products add iscritical int(3);
+
+But found out the column need to be no null;
+mysql> alter table products drop column iscritical;
+
+mysql> alter table products add iscritical int(3) not null;
+
+mysql> desc products;
+
+
+Change types of the column (from int(11) to varchar(255))
+mysql> alter table products change product_category_id product_category_id varchar(255);
+
+mysql> desc products;
+
+change back
+mysql> alter table products change product_category_id product_category_id int(11);
+
+
+
