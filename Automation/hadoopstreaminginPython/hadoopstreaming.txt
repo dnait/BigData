@@ -3,6 +3,8 @@ API: Hadoop Streaming API
 mapper.py and reducer.py
 create a word_input.txt file:
 word_input.txt content: cat mouse lion deer tiger lion elephant lion bear
+
+-------------------------------------LOCAL--------------------------------------------------------------------------
 [cloudera@quickstart Desktop]$ cat word_input.txt | python mapper.py
 
 cat 1
@@ -27,3 +29,5 @@ mouse 1
 tiger 1
 
 If without sort -k1,1 then reduer.py will not work
+
+---------------------------------------------HDFS-------------------------------------------------------
