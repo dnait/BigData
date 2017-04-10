@@ -1,0 +1,2 @@
+Setup: Cloudier VM to run the samples
+API: Hadoop Streaming API
