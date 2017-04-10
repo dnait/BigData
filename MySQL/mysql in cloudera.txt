@@ -40,5 +40,6 @@ mysql> desc products;
 change back
 mysql> alter table products change product_category_id product_category_id int(11);
 
-
-
+Add a new column that default value is zero
+mysql> alter table products add column is popular int(1) default 0;
+mysql> desc products;
