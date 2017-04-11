@@ -1,2 +1,52 @@
 Setup: Cloudier VM to run the samples
 API: Hadoop Streaming API
+mapper.py and reducer.py
+create a word_input.txt file:
+word_input.txt content: cat mouse lion deer tiger lion elephant lion bear
+
+-------------------------------------LOCAL--------------------------------------------------------------------------
+[cloudera@quickstart Desktop]$ cat word_input.txt | python mapper.py
+
+cat 1
+mouse 1
+lion 1
+deer 1
+tiger 1
+lion 1
+elephant 1
+lion 1
+bear 1
+
+[cloudera@quickstart Desktop]$ cat word_input.txt | python mapper.py |sort -k1,1 | python reducer.py
+(Attention: no space between -k1,1)
+
+bear 1
+cat 1
+deer 1
+elephant 1
+lion 3
+mouse 1
+tiger 1
+
+If without sort -k1,1 then reduer.py will not work
+
+---------------------------------------------HDFS-------------------------------------------------------
+[cloudera@quickstart Desktop]$sudo -u hdfs hadoop fs -chmod 777 /user/cloudera
+[cloudera@quickstart Desktop]$hdfs dfs -put word_input.txt /user/cloudera
+
+[cloudera@quickstart Desktop]$ ls /usr/lib/hadoop-0.20-mapreduce/contrib/streaming/hadoop-streaming-2.6.0-mr1-cdh5.8.0.jar
+
+[cloudera@quickstart Desktop]$ hadoop jar /usr/lib/hadoop-0.20-mapreduce/contrib/streaming/hadoop-streaming-2.6.0-mr1-cdh5.8.0.jar -Dmapred.reduce.tasks=1 -file /home/cloudera/Desktop/mapper.py /home/cloudera/Desktop/reducer.py -mapper "python mapper.py" -reducer "python reducer.py" -output /user/cloudera/wc_output
+
+[cloudera@quickstart Desktop]$ hdfs dfs -cat /user/cloudera/wc_output/part*
+bear	
+cat	1
+deer	1
+elephant	1
+lion	3
+mouse	1
+tiger	1
+[cloudera@quickstart Desktop]$ 
+
+
+
