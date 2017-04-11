@@ -1,0 +1,33 @@
+sqoop job: work with saved jobs:who
+
+1.Load products table into HDFS
+
+sqoop import --connect “jdbc:mysql://quickstart.cloudera:3306/retail_db” --username retail_dba --password cloudera --table products -m 1
+
+[check files]$ hdfs dfs -ls /user/cloudera/products
+
+2.Save the command into a sqoop job
+
+sqoop job --create products_job -- import --connect “jdbc:mysql://quickstart.cloudera:3306/retail_db” --username retail_dba --password cloudera --table products -m 1
+
+3.check the job
+
+$ sqoop job --list
+Available jobs:
+  products_job
+
+4.Execute products_job to implement the import
+
+$ sqoop job --exec products_job
+Attention: need to input database password: cloudera
+
+How to save our passwords:
+Configure sqoop-site.xml
+
+<property>
+<name>sqoop.metastore.client.record.password</name>
+<value>true</value>
+<description>If true, allow saved passwords in the metastore.
+</description>
+</property>
+
