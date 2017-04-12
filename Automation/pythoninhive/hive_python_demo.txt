@@ -1,0 +1,25 @@
+Hive with Python example 
+
+pythoninhive.py
+#!/usr/bin/env python
+import sys
+
+for line in sys.stdin:
+    line = line.strip()
+    words = line.split()
+    word = words[0]
+    print word
+ 
+following table in Cloudera:
+hive>show tables;
+hive> select * from categories;
+
+
+hive> desc categories;
+OK
+category_id    int
+category_department_id    int
+category_name    string
+Time taken: 0.147 seconds
+run:
+hive> select transform (category_id, category_name) using ‘/home/cloudera/pythoninhive.py' from categories;
