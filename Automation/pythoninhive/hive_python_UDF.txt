@@ -21,5 +21,16 @@ category_id    int
 category_department_id    int
 category_name    string
 Time taken: 0.147 seconds
+
+add FILE command:
+Example: add FILE /home/cloudera/pythoninhive.py;
+
+Use the TRANSFORM…AS Construct in the Hive Shell to Run the Python UDF.
+Syntax:
+SELECT TRANSFORM (col_name) //Line 1
+USING ‘python python_script’ //Line 2
+AS (col_names) //Line 3
+FROM table_name; //Line 4
+
 run:
 hive> select transform (category_id, category_name) using ‘/home/cloudera/pythoninhive.py' from categories;
