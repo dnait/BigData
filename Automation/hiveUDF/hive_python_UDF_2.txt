@@ -1,0 +1,44 @@
+Hive UDF with Python example 
+
+reformat.py
+#!/usr/bin/env python
+import sys
+
+### First columns looks like [123, 213, 212312]
+### First column returns [123:0,  213:1,  212312:2]. 
+
+for line in sys.stdin:
+    ### Format string
+    line = line.strip()
+    line = str(line).replace("[", '').replace(']', '').replace('{', '').replace('}', '').replace('(', '').replace(')', '')
+    line = line.split('\t')
+
+    ### Format array
+    array1 = str(line[0]).split(',')
+    num_items = len(array1)
+    combined_array = []
+    for i in range(num_items):
+        this_item = str(array1[i]) + ':' + str(i)
+        combined_array.append(this_item)
+
+    ### Remove array characters from resulting string.
+    combined_array = str(combined_array).replace('[', '').replace(']', '')
+    combined_array = combined_array.replace('\'', '').replace('\"', '')
+
+    ## Add additional fields if they exist and print.
+    if len(line) == 1:
+        print combined_array
+    else:
+        rest = '\t'.join(([str(i) for i in line[1:]]))
+        print '\t'.join([combined_array, rest])
+
+
+ 
+following command in Cloudera:
+
+run:
+hive> SELECT
+TRANSFORM (hosting_ids, user_id) 
+USING 'python reformat.py' AS (hosting_ranks_array, user_id)
+FROM 
+s_table;
