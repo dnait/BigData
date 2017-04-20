@@ -17,8 +17,8 @@ object Practice {
       val bigNumber:Long = 1234567890l 
       val smallNumber:Byte = 127
       
-      val isGreater = 1 > 2
-      val isLesser = 1 < 2
+      val isGreater = 1 > 2   	//false
+      val isLesser = 1 < 2	//true
       
       if (1 > 3) print("Impossible") else print("make sense")
       if (1 > 3) {
