@@ -43,6 +43,8 @@ object PracticeDataStructure {
     
     //map(x:String => {f(x)})
     val reverseInf = employeeInf.map((x:String) => {x.reverse})
+    val rev2 = employeeInf.map(_.reverse)
+    println(rev2)  //same as reverseInf
     println(reverseInf)  //output: List(DI, emaN, htriBfOetaD, sserddA)
     for (x <- reverseInf) {print(x + " ; ")}
     
