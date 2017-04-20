@@ -55,7 +55,7 @@ object PracticeDataStructure {
     println("Sum = " + sum)    //output: Sum = 15
     
     
-    //filter() can remove stuff you don't want. Here we'll use wildcard syntax
+    //filter() keep conditions. Here we'll use wildcard syntax
     val numberList = List(11,12,13,14,15)
     //those three are all correct
     val ILoveNoThirteen = numberList.filter { x => x != 13 }
