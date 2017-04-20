@@ -2,12 +2,12 @@ package ScalaHandsOn
 
 object Practice {
    def main(args: Array[String]) {
-     val hello:String = "HELLO"
+     val hellox:String = "HELLO"
       println(hello)
       
-      var concate:String = hello //cannot be val
-      concate=hello + "end"
-      println(concate)
+      var concatex:String = hellox //cannot be val
+      concatex = hellox + "end"
+      println(concatex)
       
       val One:Int = 1
       val flag:Boolean = true
