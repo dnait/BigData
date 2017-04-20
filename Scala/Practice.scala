@@ -71,6 +71,9 @@ object Practice {
         println(a3)
         a1 = a2
         a2 = a3             
-      }      
+      }
+	   
+	//scala> "hello world, this is Al".split("\\s+")  # return Array[String] instead of List
+	//res0: Array[java.lang.String] = Array(hello, world,, this, is, Al)
     }
 }
