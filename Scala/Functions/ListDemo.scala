@@ -8,7 +8,7 @@ package ScalaHandsOn
  
 object ListDemo {
   def main(args: Array[String]) {
-    val list1 = 1 ::2 ::3 :: Nil
+    val list1 = 1 :: 2 :: 3 :: Nil
     
     // A list cannot be updated.
     // error: value update is not a member of List[String]
