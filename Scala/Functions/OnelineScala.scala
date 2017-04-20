@@ -11,6 +11,8 @@ object OnelineScala {
     //2. Sum of a List of Number
     (1 to 1000).reduceLeft(_+_)      //Int = 500500
     (1 to 1000).sum                  //Int = 500500
+    (1 to 1000).reduce(_+_)          //Int = 500500
+    (1 to 1000).foldLeft(0)(_+_)     //Int = 500500
     
     //3. Verify if Exists in a String
     // I used this example for checking if a tweet contains a word I'm interested in
