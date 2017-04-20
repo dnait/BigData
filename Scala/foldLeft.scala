@@ -12,5 +12,6 @@ object foldLeft {
   
   def sum1(list: List[Int]): Int = list.foldLeft(0)(_+_)
   def sum2(list: List[Int]): Int = list.foldLeft(0)((a,b) => a + b)
+  //list.foldLeft(0)((x: Int, y: Int) => x + y) is also correct
 }
 
