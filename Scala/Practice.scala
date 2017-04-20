@@ -5,8 +5,8 @@ object Practice {
      val hello:String = "HELLO"
       println(hello)
       
-      var concate:String=hello
-      concate=hello+"end"
+      var concate:String = hello //cannot be val
+      concate=hello + "end"
       println(concate)
       
       val One:Int = 1
