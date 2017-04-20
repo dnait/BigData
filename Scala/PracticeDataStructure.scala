@@ -34,6 +34,12 @@ object PracticeDataStructure {
     //Iterating
     for(x <- employeeInf) {println(x)}   
     
+    val s = "eggs, milk, butter, Coco Puffs"
+    val res = s.split(",").map(_.trim)
+    for (x <- res)
+            print(x + " ")
+    //eggs milk butter Coco Puffs
+    
     
     //map(x:String => {f(x)})
     val reverseInf = employeeInf.map((x:String) => {x.reverse})
