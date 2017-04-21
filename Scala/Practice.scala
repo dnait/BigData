@@ -2,12 +2,12 @@ package ScalaHandsOn
 
 object Practice {
    def main(args: Array[String]) {
-     val hello:String = "HELLO"
+     val hellox:String = "HELLO"
       println(hello)
       
-      var concate:String=hello
-      concate=hello+"end"
-      println(concate)
+      var concatex:String = hellox //cannot be val
+      concatex = hellox + "end"
+      println(concatex)
       
       val One:Int = 1
       val flag:Boolean = true
@@ -17,8 +17,8 @@ object Practice {
       val bigNumber:Long = 1234567890l 
       val smallNumber:Byte = 127
       
-      val isGreater = 1 > 2
-      val isLesser = 1 < 2
+      val isGreater = 1 > 2   	//false
+      val isLesser = 1 < 2	//true
       
       if (1 > 3) print("Impossible") else print("make sense")
       if (1 > 3) {
@@ -71,6 +71,9 @@ object Practice {
         println(a3)
         a1 = a2
         a2 = a3             
-      }      
+      }
+	   
+	//scala> "hello world, this is Al".split("\\s+")  # return Array[String] instead of List
+	//res0: Array[java.lang.String] = Array(hello, world,, this, is, Al)
     }
 }

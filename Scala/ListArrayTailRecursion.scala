@@ -27,7 +27,8 @@ object ListArrayTailRecursion {
     val days = List("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
 
     // Make a list element-by-element in a new List()
-    val when = "AM" :: "PM" :: List()
+    val when = "AM" :: "PM" :: List()  //output: List(AM, PM)
+    //val when2 = "AM"::"PM" ERROR- value :: is not a member of String
     
     println(days)
     println(when)

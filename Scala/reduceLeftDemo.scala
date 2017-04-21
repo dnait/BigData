@@ -18,7 +18,9 @@ object reduceLeftDemo {
     println(res2)
     
     val res3 = a.reduceLeft(_ min _)    //2
+    val res4 = a.min  //2 also works for list
     println(res3)
+    println(res4)
     
     val res4 = a.reduceLeft(_ max _)    //20
     println(res4)

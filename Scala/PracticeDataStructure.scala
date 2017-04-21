@@ -34,9 +34,17 @@ object PracticeDataStructure {
     //Iterating
     for(x <- employeeInf) {println(x)}   
     
+    val s = "eggs, milk, butter, Coco Puffs"
+    val res = s.split(",").map(_.trim)
+    for (x <- res)
+            print(x + " ")
+    //eggs milk butter Coco Puffs
+    
     
     //map(x:String => {f(x)})
     val reverseInf = employeeInf.map((x:String) => {x.reverse})
+    val rev2 = employeeInf.map(_.reverse)
+    println(rev2)  //same as reverseInf
     println(reverseInf)  //output: List(DI, emaN, htriBfOetaD, sserddA)
     for (x <- reverseInf) {print(x + " ; ")}
     
@@ -47,7 +55,7 @@ object PracticeDataStructure {
     println("Sum = " + sum)    //output: Sum = 15
     
     
-    //filter() can remove stuff you don't want. Here we'll use wildcard syntax
+    //filter() keep conditions. Here we'll use wildcard syntax
     val numberList = List(11,12,13,14,15)
     //those three are all correct
     val ILoveNoThirteen = numberList.filter { x => x != 13 }
@@ -83,6 +91,8 @@ object PracticeDataStructure {
     //Create the List
     val x1 = List.range(1, 10)        //x1: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9)
     val x2 = List.range(0, 10, 2)     //x2: List[Int] = List(0, 2, 4, 6, 8)
+    val x2 = List.range(1, 10, -2)    //List[]
+    val x2 = List.range(10, 1, -2)    //List(10, 8, 6, 4, 2)
     val x3 = List.fill(3)("foo")       //x3: List[java.lang.String] = List(foo, foo, foo)
     
     

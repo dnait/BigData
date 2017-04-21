@@ -1,0 +1,10 @@
+//swap
+
+swap is a method on Scala Tuples. It swaps the first and second elements of a Tuple2 (or pair) with each other. For example:
+
+scala> val pair = ("a","b")
+pair: (String, String) = (a,b)
+
+scala> val swapped = pair.swap
+swapped: (String, String) = (b,a)
+RDD's map function applies a given function to each element of the RDD. In this case, the function to be applied to each element is simply

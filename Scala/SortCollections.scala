@@ -16,6 +16,9 @@ object SortCollections {
 
     b.sortWith(_.length < _.length)
     //res4: List[String] = List(pear, banan, apple, grapes)
+    
+    //same results
+    b.reduceLeft((x,y) => if (x.length > y.length) x else y)
 
     b.sortWith(_.length > _.length)
     //res5: List[String] = List(grapes, banan, apple, pear)

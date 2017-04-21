@@ -8,7 +8,7 @@ package ScalaHandsOn
  
 object ListDemo {
   def main(args: Array[String]) {
-    val list1 = 1 ::2 ::3 :: Nil
+    val list1 = 1 :: 2 :: 3 :: Nil
     
     // A list cannot be updated.
     // error: value update is not a member of List[String]
@@ -99,6 +99,18 @@ object ListDemo {
     val addEndList1 = List(1,2,3) :+ 4      //List(1, 2, 3, 4)
     val addHeadList1 = 0 +: List(1,2,3)     //List(0, 1, 2, 3)
     val addEndList2 = List(1,2,3) ::: List(4)      //List(1, 2, 3, 4)
+   
+   //Add :+= cannot be :+ =, which leads error
+     var mylist = List.empty[String]
+     mylist :+= "a"     //error: mylist :+ = "a"
+     mylist :+= "b"
+     mylist :+= "c"
+     println(mylist)
+   
+     //user++ for appending a list
+     var mylist1 = List.empty[String]
+     mylist1 ++= List("a", "b", "c")
+     println(mylist1)
 
     //merge two lists
     val positions1 = List("top", "bottom")
