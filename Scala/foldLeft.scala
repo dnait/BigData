@@ -6,8 +6,6 @@ object foldLeft {
     println(list.sum)        //10
     println(sum1(list))      //10
     println(sum2(list))      //10
-    
-    
   }
   
   def sum1(list: List[Int]): Int = list.foldLeft(0)(_+_)
