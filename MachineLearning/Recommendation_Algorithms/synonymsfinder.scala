@@ -5,7 +5,7 @@ import org.apache.spark.rdd._
 import org.apache.spark.SparkContext._
 import org.apache.spark.mllib.feature.Word2Vec
 
-object Asynfinder {
+object synonymsfinder {
   def main(args: Array[String]) {
       // Set up a SparkContext named WordCount that runs locally using
       // all available cores.
