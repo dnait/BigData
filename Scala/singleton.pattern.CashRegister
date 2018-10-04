@@ -1,0 +1,14 @@
+package singleton.pattern
+
+object CashRegister {
+    def open { println("opened") }
+    def close { println("closed") }
+}
+
+//when CashRegister defined as an object, there can be only one instance of it, and its methods are called just like static methods on a Java class:
+
+object Main extends App {
+    CashRegister.open
+    CashRegister.close
+    println(DateUtils.getCurrentDate)
+}
