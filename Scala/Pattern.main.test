@@ -1,0 +1,8 @@
+package com.scala.pattern.factory
+
+object maintest extends App {
+    val simpleBuilding: IBuilding = ConstructionFactory.createBuilding("Simple")
+    val luxuryBuilding: IBuilding = ConstructionFactory.createBuilding("Luxury")
+    simpleBuilding.show()
+    luxuryBuilding.show()
+}
