@@ -352,7 +352,3 @@ hadoop fs -cat /user/cloudera/sqoop_merge/departments/part*
 --Merge process ends
 
 
-with oracle tnsnames.ora file with thin client
-export HADOOP_OPTS="-Doracle.net.tns_admin=$TNS_ADMIN"
-sqoop list-databases -D mapred.map.child.java.opts='-Doracle.net.tns_admin=.' -files $TNS_ADMIN/tnsnames.ora --connect 'jdbc:oracle:thin"@your_tns_entry' --username urname --passsword urpwd
-[-D mapred.map.child.java.opts provinding java options]
