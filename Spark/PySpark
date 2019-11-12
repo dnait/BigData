@@ -1,0 +1,341 @@
+Pyspark:
+=> terminal, $pyspark
+
+
+----------- Spark 1.0 use SparkContext, when spark 2.0, use SparkSession  ---------------
+1. SparkContext是任何spark功能的入口点。当我们运行任何Spark应用程序时，启动一个驱动程序，它具有main函数，并在此处启动SparkContext。然后，驱动程序在工作节点上的执行程序内运行操作。
+
+SparkContext使用Py4J启动 JVM 并创建 JavaSparkContext。默认情况下，PySpark将SparkContext作为 'sc'提供 ，因此创建新的SparkContext将不起作用
+ 
+以下代码块包含PySpark类的详细信息以及SparkContext可以采用的参数。
+
+class pyspark.SparkContext (
+   master = None,
+   appName = None,
+   sparkHome = None,
+   pyFiles = None,
+   environment = None,
+   batchSize = 0,
+   serializer = PickleSerializer(),
+   conf = None,
+   gateway = None,
+   jsc = None,
+   profiler_cls = <class 'pyspark.profiler.BasicProfiler'>
+)
+
+from pyspark import SparkContext
+ sc = SparkContext("local", "First App")
+if ValueError: Cannot run multiple SparkContexts at once; existing SparkContext
+try: sc.stop()
+
+
+2. 要在PySpark中应用任何操作，我们首先需要创建一个 PySpark RDD 。以下代码块具有PySpark RDD类的详细信息
+
+class pyspark.RDD (
+   jrdd,
+   ctx,
+   jrdd_deserializer = AutoBatchedSerializer(PickleSerializer())
+)
+RDD代表 Resilient Distributed Dataset，它们是在多个节点上运行和操作以在集群上进行并行处理的元素。RDD是不可变元素，这意味着一旦创建了RDD，就无法对其进行更改。RDD也具有容错能力，因此在发生任何故障时，它们会自动恢复。您可以在这些RDD上应用多个操作来完成某项任务。
+
+要对这些RDD进行操作，有两种方法
+
+Transformation
+Action
+
+=============================== 必须要掌握的操作 ======================================
+from pyspark import SparkContext
+from operator import add  =====> reduce(add) 需要这个package
+sc = SparkContext("local", "Reduce app")
+nums = sc.parallelize([1, 2, 3, 4, 5])
+adding = nums.reduce(add)
+
+join(other，numPartitions = None)
+它返回RDD，其中包含一对带有匹配键的元素以及该特定键的所有值。在以下示例中，两个不同的RDD中有两对元素。在连接这两个RDD之后，我们得到一个RDD，其元素具有匹配的键及其值
+x = sc.parallelize([("spark", 1), ("hadoop", 4)]) 
+y = sc.parallelize([("spark", 2), ("hadoop", 5)]) 
+joined = x.join(y) 
+final = joined.collect()
+
+输出：Join RDD ->
+ [    ('spark', (1, 2)),      ('hadoop', (4, 5)) ]
+
+cache()
+使用默认存储级别（MEMORY_ONLY）保留此RDD。您还可以检查RDD是否被缓存。
+words = sc.parallelize (    ["scala",    "java",    "hadoop",    "spark",    "akka",    "spark vs hadoop",    "pyspark",    "pyspark and spark"] ) 
+words.cache() 
+caching = words.persist().is_cached   =====> output: True
+=============================== 必须要掌握的操作END ==================================
+Apache Spark使用共享变量。当驱动程序将任务发送到集群上的执行程序时，共享变量的副本将在集群的每个节点上运行，以便可以将其用于执行任务。
+Apache Spark支持两种类型的共享变量
+•	Broadcast
+•	Accumulator
+广播
+广播变量用于跨所有节点保存数据副本。此变量缓存在所有计算机上，而不是在具有任务的计算机上发送。以下代码块包含PySpark的Broadcast类的详细信息。
+class pyspark.Broadcast (
+   sc = None,
+   value = None,
+   pickle_registry = None,
+   path = None
+)
+words_new = sc.broadcast(["scala", "java", "hadoop", "spark", "akka"]) 
+data = words_new.value print "Stored data -> %s" % (data) 
+elem = words_new.value[2] 
+print "Printing a particular element in RDD -> %s" % (elem)
+跟正常操作一样，不知道broadcast的目的是什么。。。
+累加器
+累加器变量用于通过关联和交换操作聚合信息。例如，您可以使用累加器进行求和操作或计数器（在MapReduce中）。以下代码块包含PySpark的Accumulator类的详细信息。
+class pyspark.Accumulator(aid, value, accum_param) 
+以下示例显示如何使用Accumulator变量。Accumulator变量有一个名为value的属性，类似于广播变量。它存储数据并用于返回累加器的值，但仅在驱动程序中可用。
+在此示例中，累加器变量由多个工作程序使用并返回累计值。
+num = sc.accumulator(10)
+def f(x):
+   global num
+   num+=x
+rdd = sc.parallelize([20,30,40,50])
+rdd.foreach(f)
+final = num.value
+print "Accumulated value is -> %i" % (final)  =====> output 150
+
+
+#（b）getNumPartitions()方法查看list被分成了几部分 rdd.getNumPartitions() 
+>>> word_map = words.map(lambda x: (x, 1))
+>>> word_map.getNumPartitions()      ===> 8
+>>> word_map.glom().collect()
+[[('scala', 1)], [('java', 1)], [('hadoop', 1)], [('spark', 1)], [('akka', 1)], [('spark vs hadoop', 1)], [('pyspark', 1)], [('pyspark and spark', 1)]]
+
+在这个例子中，是一个4-core的CPU笔记本;Spark创建了4个executor，然后把数据分成4个块。colloect()方法很危险，数据量上BT文件读入会爆掉内存…
+
+How to initialize a RDD: 
+1. FROM sc.parallelize   2. FROM a file:/// (linux/mac)
+#（c）first()方法取读入的rdd数据第一个item rdd.first() #Output:'Mary,F,7065'
+
+map() 对RDD的每一个item都执行同一个操作
+flatMap() 对RDD中的item执行同一个操作以后得到一个list，然后以平铺的方式把这些list里所有的结果组成新的list
+filter() 筛选出来满足条件的item
+distinct() 对RDD中的item去重
+sample() 从RDD中的item中采样一部分出来，有放回或者无放回
+sortBy() 对RDD中的item进行排序
+
+>>> import numpy as np
+>>> numbersRdd = sc.parallelize(np.linspace(1.0, 10.0, 10))
+>>> print(numbersRdd)
+ParallelCollectionRDD[17] at parallelize at PythonRDD.scala:475
+>>> print(numbersRdd.collect())
+[1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
+
+>>> avg=squareRdd.reduce(lambda x, y: x + y)
+>>> avg.collect()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'numpy.float64' object has no attribute 'collect'
+>>> print(avg)  =============  after reduce will lead to float64
+385.0
+
+>>> avg=squareRdd.reduce(lambda x, y: x + y) / squareRdd.count()
+>>> print(avg)
+38.5
+
+-------------------- numpy linspace (start, end, nums, endpoint=True,...) ---------------
+>>> np.linspace(2.0, 3.0, num=5)
+array([2.  , 2.25, 2.5 , 2.75, 3.  ])
+>>> np.linspace(2.0, 3.0, num=5, endpoint=False)
+array([2. ,  2.2,  2.4,  2.6,  2.8])
+>>> np.linspace(2.0, 3.0, num=5, endpoint=True)
+array([ 2.  ,  2.25,  2.5 ,  2.75,  3.  ])
+-------------------- numpy linspace (start, end, nums, endpoint=True,...) ---------------
+https://stackoverflow.com/questions/41144218/pyspark-creating-a-data-frame-from-text-file
+
+
+---------- https://www.udemy.com/course/learning-pyspark/ --------------------
+
+>>> txtRdd=sc.textFile("file:////Users/grace/Documents/sparksample_txt.txt")
+>>> txtRdd.take(5)
+>>> txtRdd.first()
+>>> how to get the last one? >>> txtRdd.collect()[-1]    since txtRdd.collect() will return list
+----------- spark 2.0, use SparkSession  ---------------
+1、SparkSession 介绍
+通过SparkSession 可以创建DataFrame, 也可以把DataFrame注册成一个table，之后便可以执行SQL语句。适合小数据量的操作, 读取.parquet格式的文件，得到DataFrame (DataFrame和pandas里的DataFrame类似。)
+>>> from pyspark.sql import SparkSession
+>>> spark=SparkSession
+.builder
+.appName("SparkSQLbasicExample")
+.config("spark.executor.memory","2g")
+.enableHiveSupport()
+.getOrCreate()
+
+sql = """
+      SELECT id as customer_id,name, register_date
+      FROM TRGT_DB.TRGT_TBL_NAME
+      limit 100
+      """
+df = myspark.sql(sql)
+df.show()
+
+df.show() 可以预览数据，默认显示前20行，df.show(n) 可以显示前n行。
+df.show()结果如图：
+
+
+SparkSession实质上是SQLContext和HiveContext的组合（未来可能还会加上StreamingContext），所以在SQLContext和HiveContext上可用的API在SparkSession上同样是可以使用的。SparkSession内部封装了sparkContext，所以计算实际上是由sparkContext完成的。
+如果需要读hdfs数据的话，通常走Hive的比较多。一般写sql的时候，能用sparksession解决的，都不会去弄rdd的各种transform和action*
+
+stringJSONRdd=sc.parallelize( \
+"""{"id"："123"，"name"："Katie"，"age":19, "eyeColor"："brown"}""",\
+"""{"id"："234"，"name"："Michael"，"age"：22,"eyeColor"："green"}""",\
+"""{"id"："345"，"name"："Simone"，"age"：23, "eyeColor"："blue"}""")
+>>> swimJSON = spark.read.json(stringJSONRdd)
+>>> # print(swimJSON)  =====> DataFrame[_corrupt_record: string]
+# start to create a dataFrame from a JSON (from a RDD)
+>>> swimJSON.createOrReplaceTempView("swimJSON")
+>>> swimJSON.show()
++--------------------+
+|     _corrupt_record|
++--------------------+
+|{"id"："123"，"name...|
+|{"id"："234"，"name...|
+|{"id"："345"，"name...|
++--------------------+
+
+>>> spark.sql("SELECT * FROM swimJSON").collect()  =====> get a DataFrame, so use collect()
+[Row(_corrupt_record=u'{"id"\uff1a"123"\uff0c"name"\uff1a"Katie"\uff0c"age":19, "eyeColor"\uff1a"brown"}'), Row(_corrupt_record=u'{"id"\uff1a"234"\uff0c"name"\uff1a"Michael"\uff0c"age"\uff1a22,"eyeColor"\uff1a"green"}'), Row(_corrupt_record=u'{"id"\uff1a"345"\uff0c"name"\uff1a"Simone"\uff0c"age"\uff1a23, "eyeColor"\uff1a"blue"}')]
+
+
+>>> print(type(spark.sql("SELECT * FROM swimJSON")))   ==>  <class 'pyspark.sql.dataframe.DataFrame'> 
+
+How to convert RDD to DataFrame or Dataset[T]
+使用反射来推断模式
+
+swimmersJSON.printSchema()
+output:
+root
+ |-- _corrupt_record: string (nullable = true)
+
+-------------------------- take(2) vs show(2) 
+>>> swimJSON.take(2)
+[Row(_corrupt_record=u'{"id"\uff1a"123"\uff0c"name"\uff1a"Katie"\uff0c"age":19, "eyeColor"\uff1a"brown"}'), Row(_corrupt_record=u'{"id"\uff1a"234"\uff0c"name"\uff1a"Michael"\uff0c"age"\uff1a22,"eyeColor"\uff1a"green"}')]
+
+>>> swimJSON.show(2)
++--------------------+
+|     _corrupt_record|
++--------------------+
+|{"id"："123"，"name...|
+|{"id"："234"，"name...|
++--------------------+
+
+---------------- program with pyspark.sql.types ------------------------
+[https://www.aitolearn.com/article/4090543c58684396a50d383a86afac84]
+>>> stringcsvRdd = sc.parallelize([(123,'Katie',19,'brown'),(234,'Michael',22,'green'),(345,'Simone',23,'blue')])
+
+>>> schema = StructType([ \
+... StructField("id", LongType(), True), \
+... StructField("name", StringType(), True), \
+... StructField("age", LongType(), True), \
+... StructField("eyeColor", StringType(), True)])
+
+>>> DFswim=spark.createDataFrame(stringcsvRdd, schema)
+
+>>> DFswim.show(5)
+
++---+-------+---+--------+
+| id|   name|age|eyeColor|
++---+-------+---+--------+
+|123|  Katie| 19|   brown|
+|234|Michael| 22|   green|
+|345| Simone| 23|    blue|
++---+-------+---+--------+
+
+>>> DFswim.createOrReplaceTempView("DFswim")
+
+>>> print(type(DFswim))  =========>     <class 'pyspark.sql.dataframe.DataFrame'>
+
+
+StructField参数：
+name：该字段的名字
+dataType：该字段的数据类型
+nullable：指示此字段的值是否为空
+------------------------------------------- DataFrame API searching ------------------
+DFswim.count()
+
+
+
+
+
+
+
+>>> DFswim.count()
+3
+>>> DFswim.select("id", "name").filter("age=22").show()
++---+-------+
+| id|   name|
++---+-------+
+|234|Michael|
++---+-------+
+
+>>> DFswim.select(DFswim.id, DFswim.name).filter(DFswim.age==22).show()
++---+-------+
+| id|   name|
++---+-------+
+|234|Michael|
++---+-------+
+ 查询眼睛颜色是b开头的数据
+
+>>> DFswim.select("name", "eyeColor").filter("eyeColor like 'b%'").show()
++------+--------+
+|  name|eyeColor|
++------+--------+
+| Katie|   brown|
+|Simone|    blue|
++------+--------+
+
+Spark SQL分析查询最常见的存储格式是Parquet文件格式。这是一个许多其他数据处理系统支持的列式／拉状格式，并且对于自动保存原始数据格式的Parquet文件，SparkSQL支持这些Parquet文件的读写。
+
+DataFrame场景--实时飞行性能
+数据集下载：https://github.com/drabastomek/learningPySpark
+
+准备数据集
+
+#设置文件路径（set File Paths)
+flightPerfFilePath=”/databricks-datasets/flights/departuredelays.csv"
+airportsFilePath=”/dacabricks-dacasets/flights/airport-codes-na.txt”
+
+＃获得机场数据 (ObtainAirportsdataset)
+airports=spark.read.csv(airportsFilePath,header='true’，inferSchema=’true’，sep=’\t’)
+airports.createOrReplaceTempView("airports")
+
+# 获得起飞延时数据集（Obtain Departure Delays dataset）
+flightPerf = spark.read.csv(flightPerfFilePath,header=’true')
+flightPerf.creaceOrReplaceTempView("FlightPerfrmance")
+
+# 缓存起飞延迟数据集（Cache the Departure Delays dataset)
+flightPerf.cache()
+PythonCopy
+ 
+
+连接飞行性能和机场
+
+# 通过城市和起飞代码查询航班延误的总数
+＃（华盛顿州）
+spark.sql("""
+select a.City,
+f.origin,sum(f.delay) as Delays
+from FlightPerformance f
+join airports a
+on a.IATA=f.origin
+where a.State='WA'
+group by a.City,f.origin
+order by sum(f.delay) desc"""
+).show()
+PythonCopy
+使用笔记本（notebook)（如Databricks、iPython、Jupyter和ApacheZeppelin），你可以更轻松地执行和可视化查询。在Databricks笔记本的例子中．我们可以将该数据快速地可视化为一个条形图、地图等。
+
+可视化飞行性能数据--用Databricks查询数据后进行可视化
+
+%sql--Query Sum	of Flight Delays by State (for the US)
+select a.State, sum(f.delay) as Delays
+from FlightPerformance f join airports a
+on a.IATA = f.origin
+where a.Country='USA'
+group by a.State
+PythonCopy
+Spark 数据集(Dataset) API
+Apache Spark1.6介绍了Spark Dataset的目标．该目标是为域对象提供一个允许用户轻松表示转换的API，同时还提供了Spark SQL强大的执行引擎性能和优势  作为Spark2.0版本中的一部分，DataFrame API被合并到了Dataset API之中，从而统一了所有的库的数据处理能力。由于这种统一．开发人员现在需要学习和记忆的概念变少了，并且使用了一种单一高层和类安全的API--称为数据集。
