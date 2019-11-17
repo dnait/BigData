@@ -34,3 +34,11 @@ FROM table_name; //Line 4
 
 run:
 hive> select transform (category_id, category_name) using ‘/home/cloudera/pythoninhive.py' from categories;
+
+
+update with JAVA: 
+
+How to use UDF?
+hive> add jar my-udf.jar
+hive> create temporary function fahrenheit_to_celcius using "com.mycompany.hive.udf.ConvertToCelcius";
+hive> SELECT fahrenheit_to_celcius(temp_fahrenheit) from temperature_data;
