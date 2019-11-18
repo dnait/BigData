@@ -65,11 +65,13 @@ object basicScala {
             set.add("123");
             set.add("456");
     */
-    //Tuple:
+    //4. Tuple:
     val hostPort = ("localhost", 80)
     scala> hostPort._1   ======> "localhost"
     scala> hostPort._2   ======> 80
-    
+    // python: thistuple = ("apple", "banana", "cherry")
+    // print(thistuple[-1])  =====> "cherry"
+
     //tule match method
     val priceOfPlainDonut = hostPort.foreach { tuple => {
       tuple match {
@@ -78,14 +80,27 @@ object basicScala {
         case _ => None
       }
      }
+					     
 
     
-    
+    //5. Map
     val a = Map("apple" -> "fruit", "cabbage" -> "vege", "peanut" -> "nut")
     //a: scala.collection.immutable.Map[String,String] = Map(apple -> fruit, cabbage -> vegetable, peanut -> nuts)
     //a("g") will result in exception java.util.NoSuchElementException: key not found g
     println(a("apple"))      //fruit
   }
+	  
+	  
+   //6. python Dict
+   thisdict = {
+      "brand": "Ford",
+      "model": "Mustang",
+      "year": 1964
+    }
+    print(thisdict)
+	  
+	  
+	  
   //Functions
   def sum(a: Int, b: Int): Int = { a + b }
   def sum1(a: Int, b: Int): Int = a + b
@@ -102,3 +117,54 @@ public class ListExample{
             }  
     }
 }
+
+	  
+python:	  
+a = 33
+b = 200
+if b > a:
+    print("b is greater than a")
+	  
+//Scala:	  
+object Demo {
+   def main(args: Array[String]) {
+      var x = 10;
+      if( x < 20 ){
+         println("This is if statement");
+      }
+   }
+}
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+//Shell script	  
+INPUT_STRING=hello
+while [ "$INPUT_STRING" != "bye" ]
+do
+  echo "Please type something in (bye to quit)"
+  read INPUT_STRING
+  echo "You typed: $INPUT_STRING"
+done
+	  
+	  
+echo "Bash version ${BASH_VERSION}..."
+for i in {0..10..2}
+  do 
+     echo "Welcome $i times"
+ done
+
+Bash version 4.0.33(0)-release...
+Welcome 0 times
+Welcome 2 times
+Welcome 4 times
+Welcome 6 times
+Welcome 8 times
+Welcome 10 times
