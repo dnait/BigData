@@ -210,22 +210,135 @@ x: List[Int] = List(1, 2, 3, 4)
 ------------------------------------------------ Functional Combinators End--------------------------------------------------	  
 
 -------------------------------------------------- Spark Scala vs PySpark ----------------------------------------------------	   
+//session
+val peopleDF = spark.read.json(path)   ===> return a string, then cannot use for flatMap, need to work with Row
+
+//2.4 still can use context
+val txt = sc.textFile("sparksampe.txt")	  
+scala> val x = txt.flatMap(line => line.split(" ")).collect
+x: Array[String] = Array(Deforestation, is, arising, as, the, ..., powerful, demon)	
+scala> val counts = txt.flatMap(line => line.split(" ")).map(word => (word,1)).reduceByKey(_+_)	  
+rdd.sortBy(_._2,false) =========> will sort by the value and max first
+	 
+scala> val counts = txt.flatMap(line => line.split(" ")).map(word => (word,1)).reduceByKey(_+_).sortBy(_._2,false)	  
+scala> counts.take(5)
+res5: Array[(String, Int)] = Array((the,12), (to,5), (and,5), (as,4), (in,3))
 	  
+	  
+	  
+//python:
+>>> import sys
+>>> from pyspark import SparkContext, SparkConf
+>>> if __name__ == "__main__":
+...     sc = SparkConect("local","PySpark word count example")
+...     words = sc.text("path").flatMap(lambda x: x.split(" "))
+...     wordcounts = words.map(lambda word: (word, 1)).reduceByKey(lambda a,b:a + b)
+...     wordcounts.saveAsTextFile("path")
+	  
+
+	  //Try to read a table:
+val a =spark.read.format("csv").option("delimiter", "\t").option("header", true).load("file:///Path_to_table_file/table.txt")
+val b =a.groupBy("ACTOR_NAME").count()
+.groupBy("count")
+.agg(concat_ws(",",collect_list("ACTOR_NAME")).alias("Names"))
+.orderBy(desc("count"))
+.select("Names")
+.show(10,false)
+	  
+	  
+//python to read a table, load csv, text, json all with "load" method	  
+>>> df = spark.read.load("examples/src/main/resources/people.csv", format="csv", sep=":", inferSchema="true", header="true")	  
+
+	  
+    sqlContext = SQLContext (sparkcontext)
+
+	  
+CSV file look like:	  
+"title","text"
+"Data","Data (/ˈdeɪtə/ DAY-tə, /ˈdætə/ DA-tə, or /ˈdɑːtə/ DAH-tə)[1] is a set of values of qualitative or quantitative variables. An example of qualitative data is an anthropologist's handwritten note about his or her interviews with indigenous people. Pieces of data are individual pieces of information. While the concept of data is commonly associated with scientific research, data is collected by a huge range of organizations and institutions, including businesses (e.g., sales data, revenue, profits, stock price), governments (e.g., crime rates, unemployment rates, literacy rates) and non-governmental organizations (e.g., censuses of the number of homeless people by non-profit organizations).Data is measured, collected and reported, and analyzed, whereupon it can be visualized using graphs, images or other analysis tools. Data as a general concept refers to the fact that some existing information or knowledge is represented or coded in some form suitable for better usage or processing."
+"Big Data","Big data is a term for data sets that are so large or complex that traditional data processing application software is inadequate to deal with them. Big data challenges include capturing data, data storage, data analysis, search, sharing, transfer, visualization, querying, updating and information privacy."
+ 
+ 
+# read the CSV data file and select only the field labeled as "text"
+# this returns a spark data frame
+df = sqlContext.read.load ("csv_file",
+                                format='com.databricks.spark.csv',
+                                header='true',
+                                inferSchema='true').select("text")
+	  
+	  
+mapped_rdd = df.rdd.flatMap (lambda row: get_keyvalAsOne(row))
+ 
+# for each identical token (i.e. key) add the counts
+# this gets the counts of each word
+counts_rdd = mapped_rdd.reduceByKey (add)
+ 
+# get the final output into a list
+word_count = counts_rdd.collect ()  
+
+	  
+def get_keyvalAsOne(row):
+ 
+    # get the text from the row entry
+    text=row.text
+ 
+    #lower case text and split by space to get the words
+    words=text.lower().split(" ")
+ 
+    #for each word, send back a count of 1
+    #send a list of lists
+    return [[w, 1] for w in words]	  
 
 	  
 	  
+//SQL Query to Read JSON file
+//Note that you can achieve the same results, by issuing an actual SQL query on the dataset. 
+//For this, you first register the dataset as a view, then you issue the query. This also returns the same DataFrame as above.
+df = sqlContext.read.json ("json_datafile")
+ 
+# this creates a view of the json dataset
+df.createOrReplaceTempView("json_view")
+ 
+# issue the SQL query to select only the 'text' field
+dfNew=sqlContext.sql("select text from json_view")
+ 
+# show some output
+dfNew.show()
 	  
 	  
+>>> from pyspark import SQLContext
+>>> from pyspark.sql import Row
+>>> sql_c = SQLContext(sc)
+>>> d0 = sc.textFile('./temp.csv')
+>>> d0.collect()
+[u'a,1,.2390', u'b,2,.4390', u'c,3,.2323']
+>>> d1 = d0.map(lambda x: x.split(',')).map(lambda x: Row(label = x[0], number = int(x[1]), value = float(x[2])))
+>>> d1.take(1)
+[Row(label=u'a', number=1, value=0.239)]
+>>> df = sql_c.createDataFrame(d1)
+>>> df_cut = df[df.number>1]
+>>> df_cut.select('label', 'value').collect()
+[Row(label=u'b', value=0.439), Row(label=u'c', value=0.2323)]	  
+spark-submit pyspark_example.py	  
 	  
+----------------------------------------------------
 	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
+# Run on a YARN cluster
+export HADOOP_CONF_DIR=XXX
+./bin/spark-submit \
+  --class org.apache.spark.examples.SparkPi \
+  --master yarn \
+  --deploy-mode cluster \  # can be client for client mode
+  --executor-memory 20G \
+  --num-executors 50 \
+  /path/to/examples.jar \
+  1000
+
+# Run a Python application on a Spark standalone cluster
+./bin/spark-submit \
+  --master spark://207.184.161.138:7077 \
+  examples/src/main/python/pi.py \
+  1000
 	  
 	  
 	  
