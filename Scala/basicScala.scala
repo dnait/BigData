@@ -134,15 +134,78 @@ object Demo {
       }
    }
 }
+------------------------------------------------ Functional Combinators --------------------------------------------------
+1. Map
+scala> val numbers = List(0,1, 2, 3, 4)
+scala> numbers.map((x: Int) => x * x)   
+or rewrite as:	  
+scala> def times(x: Int): Int = x * x
+scala> numbers.map(times)
+res17: List[Int] = List(0, 1, 4, 9, 16)
+
+//python:
+>>> x = [x*x for x in nums ]
+>>> x
+[0, 1, 4, 9, 16]
+
+2. filter
+scala> numbers.filter((x: Int) => x % 2 == 0)
+scala> def isEven(x:Int): Boolean = x % 2 == 0
+scala> numbers.filter(isEven)
+res19: List[Int] = List(0, 2, 4)
+
+//python:
+>>> nums= range(0,5)  //cannot use range(0,4), or '4' will not in the range
+>>> x=[x for x in nums if x % 2 == 0]
+>>> x
+[0, 2, 4]
+	  
+3. Zip
+scala> List(1, 2, 3).zip(List("a", "b", "c"))
+res20: List[(Int, String)] = List((1,a), (2,b), (3,c))
+
+scala> List(1, 2, 3).zip(List("a", "b"))
+res21: List[(Int, String)] = List((1,a), (2,b))  
+
+4. find
+scala> numbers.find((i:Int) => i > 2)
+res23: Option[Int] = Some(3)	
+
+scala> x.find((x: String)=> x contains "app")
+res25: Option[String] = Some(apple)
+	  
+scala> def findapp(x: String):Boolean = x contains "app"
+findapp: (x: String)Boolean
+
+scala> x.find(findapp)
+res24: Option[String] = Some(apple)
+  
+	  
+//python:
+>>> x = range(0, 5)
+>>> y = [i for i in x if i > 2]
+>>> y
+[3, 4]
+//String contains
+>>> x=["apple","mike","grape"]
+>>> y = [i for i in x if "app" in i]
+>>> y
+['apple']
 	  
 	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
+5. foldLeft = foldRight  
+scala> numbers.foldLeft(0){(m: Int,n: Int) => println("m=" + m + " n="+n); m+n } 
+m=0 n=0
+m=0 n=1
+m=1 n=2
+m=3 n=3
+m=6 n=4
+res26: Int = 10
+
+6. flatten
+scala> val x = List(List(1,2), List(3,4)).flatten
+x: List[Int] = List(1, 2, 3, 4)
+------------------------------------------------ Functional Combinators End--------------------------------------------------	  
 	  
 	  
 //Shell script	  
