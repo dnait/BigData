@@ -1,3 +1,5 @@
+Exit scala: scala> :q
+
 package ScalaHandsOn
 
 object basicScala {
