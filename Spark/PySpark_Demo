@@ -1,0 +1,119 @@
+#download train.csv test.csv from https://datahack.analyticsvidhya.com/contest/black-friday/
+
+from pyspark.sql import SparkSession
+
+spark = SparkSession \
+    .builder \
+    .appName("test") \
+    .config("spark.some.config.option", "setting") \
+    .getOrCreate()
+
+#SparkSession.builder().getOrCreate()  use the builder to get an existing session or the builder can be used to to create a new session:
+    
+train = spark.read.csv('./BlackFriday/train.csv', header=True, inferSchema=True)
+test = spark.read.csv('./BlackFriday/test.csv', header=True,  inferSchema=True)
+
+#inferSchema – infers the input schema automatically from data.
+train.printSchema()
+root
+ |-- User_ID: integer (nullable = true)
+ |-- Product_ID: string (nullable = true)
+ |-- Gender: string (nullable = true)
+ |-- Age: string (nullable = true)
+ |-- Occupation: integer (nullable = true)
+ |-- City_Category: string (nullable = true)
+ |-- Stay_In_Current_City_Years: string (nullable = true)
+ |-- Marital_Status: integer (nullable = true)
+ |-- Product_Category_1: integer (nullable = true)
+ |-- Product_Category_2: integer (nullable = true)
+ |-- Product_Category_3: integer (nullable = true)
+ |-- Purchase: integer (nullable = true)
+ 
+ 
+test.printSchema()
+
+root
+ |-- User_ID: integer (nullable = true)
+ |-- Product_ID: string (nullable = true)
+ |-- Gender: string (nullable = true)
+ |-- Age: string (nullable = true)
+ |-- Occupation: integer (nullable = true)
+ |-- City_Category: string (nullable = true)
+ |-- Stay_In_Current_City_Years: string (nullable = true)
+ |-- Marital_Status: integer (nullable = true)
+ |-- Product_Category_1: integer (nullable = true)
+ |-- Product_Category_2: integer (nullable = true)
+ |-- Product_Category_3: integer (nullable = true)
+ 
+ 
+ # check the data:
+ train.head(2)  # will return top 2 rows, need number in the 'head(#)' or 'take(#)'
+ or train.take(2) # same as head(2)
+ 
+ #describe() vs describe().show() ===> describe() summarizes Dataframe, show() wil get the data info.
+ >>> train.describe()
+DataFrame[summary: string, User_ID: string, Product_ID: string, Gender: string, Age: string, Occupation: string, City_Category: string, Stay_In_Current_City_Years: string, Marital_Status: string, Product_Category_1: string, Product_Category_2: string, Product_Category_3: string, Purchase: string]
+
+>>> train.describe().show()
++-------+------------------+----------+------+------+-----------------+-------------+--------------------------+-------------------+------------------+------------------+------------------+-----------------+
+|summary|           User_ID|Product_ID|Gender|   Age|       Occupation|City_Category|Stay_In_Current_City_Years|     Marital_Status|Product_Category_1|Product_Category_2|Product_Category_3|         Purchase|
++-------+------------------+----------+------+------+-----------------+-------------+--------------------------+-------------------+------------------+------------------+------------------+-----------------+
+|  count|            550068|    550068|550068|550068|           550068|       550068|                    550068|             550068|            550068|            376430|            166821|           550068|
+|   mean|1003028.8424013031|      null|  null|  null|8.076706879876669|         null|         1.468494139793958|0.40965298835780306| 5.404270017525106| 9.842329251122386|12.668243206790512|9263.968712959126|
+| stddev|1727.5915855312976|      null|  null|  null|6.522660487341822|         null|        0.9890866807573172|0.49177012631733175| 3.936211369201386| 5.086589648693479| 4.125337631575277|5023.065393820575|
+|    min|           1000001| P00000142|     F|  0-17|                0|            A|                         0|                  0|                 1|                 2|                 3|               12|
+|    max|           1006040|  P0099942|     M|   55+|               20|            C|                        4+|                  1|                20|                18|                18|            23961|
++-------+------------------+----------+------+------+-----------------+-------------+--------------------------+-------------------+------------------+------------------+------------------+-----------------+
+
+train = train.fillna(-1)
+test = test.fillna(-1)
+
+>>> test.count()
+233599
+>>> test.na.drop('any').count()
+71037
+
+#With df.na.drop() you drop the rows containing any null or NaN values.
+#With df.filter(df.col("onlyColumnInOneColumnDataFrame").isNotNull()) you drop those rows which have null only in the column onlyColumnInOneColumnDataFrame.
+
+
+# only want to collect 'User_ID' and 'age' col
+>>> train.select('User_ID','Age').show(5)
++-------+----+
+|User_ID| Age|
++-------+----+
+|1000001|0-17|
+|1000001|0-17|
+|1000001|0-17|
+|1000001|0-17|
+|1000002| 55+|
++-------+----+
+only showing top 5 rows
+
+#让我们看看在“train”和“test”中Product_ID的不同类别的数量。这可以通过应用distinct()和count()方法来实现。
+train.select('Product_ID').distinct().count(), test.select('Product_ID').distinct().count()
+"""
+(3631, 3491)
+"""
+
+#在计算“train”和“test”的不同值的数量后，我们可以看到“train”和“test”有更多的类别。让我们使用相减方法检查Product_ID的类别，这些类别正在"test"中，但不在“train”中。我们也可以对所有的分类特征做同样的处理。
+
+diff_cat_in_train_test=test.select('Product_ID').subtract(train.select('Product_ID'))
+diff_cat_in_train_test.distinct().count()
+"""
+(46, None)
+"""
+
+diff_cat_in_train_test.distinct().show(5)
+"""
++----------+
+|Product_ID|
++----------+
+| P00322642|
+| P00300142|
+| P00077642|
+| P00249942|
+| P00294942|
++----------+
+only showing top 5 rows
+"""
