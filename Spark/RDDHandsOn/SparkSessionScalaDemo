@@ -1,0 +1,17 @@
+package ScalaHandsOn
+import org.apache.spark.sql.SparkSessio
+import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+
+/*
+ * foldByKey is different in IDE and Spark-shell
+ */
+
+object RDDtransformOne {
+  def main(args: Array[String]) {
+      
+  
+  
+  }
+}
