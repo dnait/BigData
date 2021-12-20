@@ -10,8 +10,79 @@ import org.apache.spark.SparkContext._
 
 object RDDtransformOne {
   def main(args: Array[String]) {
+      val spark=SparkSession.builder().appName("test").getOrCreate()
       
-  
-  
+      //question1: 建立一个1-10数组的RDD，将全部元素*2造成新的RDD //output: 2,4,6,8,10,12,14,16,18,20
+      val data1 = spark.sparkContext.makeRDD(1 to 10);
+      val data1Res = data1.map(_*2)
+      print(data1Res.collect.mkString(","))
+      
+      //questions2: 建立一个10-20数组的RDD，使用mapPartitions将全部元素*2造成新的RDD
+      val data2Res = data2.mapPartitions(_.map(_*2))
+      print(data2Res.collect.mkString(","))
+      
+      //map vs mapPartitions vs mapPartitionsWithIndex 
+      val dfList = (1 to 100) toList
+      val df = dsList.toDF();
+      val res = df.map(x => x.getInt(0) + 2)  //dfInt: org.apache.spark.sql.Dataset[Int] = [value: int] "wont work on df.map(_+2) "
+      print(res.collect.mkString(","))
+      
+      val df1 = df.repartition(4).rdd.mapPartitions((itr)=>Iterator(itr.length)
+      df1.collect  // Array(24, 24, 24, 28)
+      
+      val df2 = df2.repartition(4).rdd.mapPartitionsWithIndex((index, itr)=>Iterator((index, itr.length))).toDF("index","partitionSize")
+      df2.collect 
+      /*
+      index | partitionSize
+        0   | 24
+        1   | 24
+        2   | 24
+        3   | 28
+     */
+     
+     //question3: 建立一个元素为 1-5 的RDD，运用 flatMap建立一个新的 RDD，新的 RDD 为原 RDD 每一个元素的 平方和三次方 来组成 1,1,4,8,9,27..
+     val df3res = df3.flatMap(x=> Array(Math.pow(x.getInt(0), 2), Math.pow(x.getInt(0),3)))
+     df3res.collect
+     //res15: Array[Double] = Array(1.0, 1.0, 4.0, 8.0, 9.0, 27.0, 16.0, 64.0, 25.0, 125.0)
+     
+     //question4: 建立一个 4 个分区的 RDD数据为Array(10,20,30,40,50,60)，使用glom将每一个分区的数据放到一个数组
+     val df4 = spark.sparkContext.makeRDD(Array(10,20,30,40,50,60))
+     df4.glom().foreach(x=> println(x.toList)) 
+     /*
+     List(20)
+     List()
+     List(30)
+     List(60)
+     List(50)
+     List()
+     List(10)
+     List(40)
+     */
+     
+     //question5: 创建一个 RDD数据为Array(1, 3, 4, 20, 4, 5, 8)，按照元素的奇偶性进行分组
+     val df5=spark.sparkContext.makeRDD(Array(1,3,4,20,4,5,8))
+     val df5Res = df5.groupBy(x=> if (x % 2 == 0) "even" else "old")
+     print(df5Res.collect.mkString(","))
+     //output:  (even,CompactBuffer(4, 20, 4, 8))(old,CompactBuffer(1, 3, 5))
+     
+     //questions6: 建立一个 RDD（由字符串组成）Array("xiaoli", "laoli", "laowang", "xiaocang", "xiaojing", "xiaokong")，过滤出一个新 RDD（包含“xiao”子串）
+     val df6Res = df6.filter(x => x.contains("xiao")).collect.toList  //val df6Res = df6.filter(_.contains("xiao")).collect.toList
+     print(df6Res) //List(xiaoli, xiaocang, xiaojing, xiaokong)
+     
+     //df6Res: List[String] = List(xiaoli, xiaocang, xiaojing, xiaokong)
+     
+     //question7: 创建一个 RDD数据为Array(10,10,2,5,3,5,3,6,9,1),对 RDD 中元素执行去重操作
+     val df7Res=df7.distinct.collect.toList
+     //df7Res: List[Int] = List(1, 9, 10, 2, 3, 5, 6)
+     
+     //question8: 创建一个分区数为5的 RDD，数据为0 to 100，之后使用coalesce再重新减少分区的数量至 2
+     val df8 = spark.sparkContext.makeRDD(0 to 100, 5)
+     val df8Res = df8.coalesce(2)
+     
+     //question9: 建立一个分区数为5的 RDD，数据为0 to 100，以后使用coalesce再从新减小分区的数量至 2
+      val df9 = spark.sparkContext.makeRDD(0 to 100, 5)
+      val df9Res = df9.repartition(3).getNumPartitions   // return 3
+      
+      
   }
 }
