@@ -1,0 +1,78 @@
+trait Task {
+    def run(): Unit // 定义每个任务的执行逻辑
+}
+
+case class SequentialTask(tasks: Seq[Task]) extends Task {
+    override def run(): Unit = {
+        tasks.foreach(_.run()) // 按顺序运行所有子任务
+    }
+}
+
+import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
+case class ParallelTask(tasks: Seq[Task])(implicit ec: ExecutionContext) extends Task {
+    override def run(): Unit = {
+        val futures = tasks.map(task => Future { task.run() }) // 并行运行子任务
+        Await.result(Future.sequence(futures), Duration.Inf)   // 等待所有任务完成
+    }
+}
+
+case class SimpleTask(name: String, action: () => Unit) extends Task {
+    override def run(): Unit = {
+        println(s"Running task: $name")
+        action()
+    }
+}
+
+
+import scala.concurrent.ExecutionContext
+
+implicit val ec: ExecutionContext = ExecutionContext.global
+
+// 定义简单任务
+val businessTable1 = SimpleTask("businessTable1", () => println("Processing businessTable1"))
+val businessTable2 = SimpleTask("businessTable2", () => println("Processing businessTable2"))
+val businessTable3 = SimpleTask("businessTable3", () => println("Processing businessTable3"))
+
+val generalTable1 = SimpleTask("generalTable1", () => println("Processing generalTable1"))
+val generalTable2 = SimpleTask("generalTable2", () => println("Processing generalTable2"))
+
+val departmentTable1 = SimpleTask("departmentTable1", () => println("Processing departmentTable1"))
+val departmentTable2 = SimpleTask("departmentTable2", () => println("Processing departmentTable2"))
+
+// 构建任务结构
+val business = SequentialTask(Seq(
+    businessTable1,
+    ParallelTask(Seq(businessTable2, businessTable3)) // businessTable2 和 businessTable3 并行
+))
+
+val generalPipeline = ParallelTask(Seq(
+    generalTable1,
+    generalTable2
+))
+
+val department = SequentialTask(Seq(
+    departmentTable1,
+    departmentTable2
+))
+
+val allTasks = ParallelTask(Seq(
+    business,
+    generalPipeline,
+    department
+))
+
+
+allTasks.run()
+
+//Processing businessTable1
+//Processing generalTable1
+//Processing generalTable2
+//Processing departmentTable1
+//Processing businessTable2
+//Processing businessTable3
+//Processing departmentTable2
+
+
